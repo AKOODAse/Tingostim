@@ -1,0 +1,82 @@
+{
+  "machines": [
+    {
+      "id": "a1",
+      "name": "CNC Mill Alpha",
+      "type": "CNC Milling",
+      "factory": "Factory A",
+      "location": "Istanbul, TR",
+      "status": "idle",
+      "capacity": 75,
+      "hourly_rate": 85,
+      "available_from": "2026-04-03",
+      "specs": "5-axis, 800x600mm table, ±0.01mm tolerance",
+      "image": "cnc"
+    },
+    {
+      "id": "a2",
+      "name": "Laser Cutter L1",
+      "type": "Laser Cutting",
+      "factory": "Factory A",
+      "location": "Istanbul, TR",
+      "status": "busy",
+      "capacity": 100,
+      "hourly_rate": 60,
+      "available_from": "2026-04-08",
+      "specs": "CO2 1500W, 1200x900mm bed, metals & plastics",
+      "image": "laser"
+    },
+    {
+      "id": "a3",
+      "name": "Injection Molder IM-3",
+      "type": "Injection Molding",
+      "factory": "Factory A",
+      "location": "Istanbul, TR",
+      "status": "idle",
+      "capacity": 40,
+      "hourly_rate": 120,
+      "available_from": "2026-04-03",
+      "specs": "250T clamp force, 500g shot weight",
+      "image": "mold"
+    },
+    {
+      "id": "a4",
+      "name": "Robotic Welder RW-1",
+      "type": "Welding",
+      "factory": "Factory A",
+      "location": "Istanbul, TR",
+      "status": "maintenance",
+      "capacity": 0,
+      "hourly_rate": 95,
+      "available_from": "2026-04-12",
+      "specs": "6-axis arm, MIG/TIG, 2m reach",
+      "image": "weld"
+    },
+    {
+      "id": "a5",
+      "name": "3D Printer FDM-5",
+      "type": "3D Printing",
+      "factory": "Factory A",
+      "location": "Istanbul, TR",
+      "status": "idle",
+      "capacity": 60,
+      "hourly_rate": 35,
+      "available_from": "2026-04-03",
+      "specs": "600x600x600mm, PLA/ABS/PETG/Nylon",
+      "image": "print"
+    },
+    {
+      "id": "a6",
+      "name": "Hydraulic Press HP-2",
+      "type": "Pressing",
+      "factory": "Factory A",
+      "location": "Istanbul, TR",
+      "status": "busy",
+      "capacity": 90,
+      "hourly_rate": 70,
+      "available_from": "2026-04-15",
+      "specs": "200T force, 800x600mm bed",
+      "image": "press"
+    }
+  ]
+}
