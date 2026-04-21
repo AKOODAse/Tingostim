@@ -1,0 +1,23 @@
+{
+  "name": "tingostim-platform",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "server-a": "json-server --watch server-factory-a/machines.json --port 3001",
+    "server-b": "json-server --watch server-factory-b/machines.json --port 3002",
+    "start:all": "concurrently --names \"FRONTEND,FACTORY-A,FACTORY-B\" --prefix-colors \"cyan,green,blue\" \"npm run dev\" \"npm run server-a\" \"npm run server-b\""
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.1",
+    "concurrently": "^9.2.1",
+    "json-server": "^1.0.0-beta.15",
+    "vite": "^5.4.2"
+  }
+}

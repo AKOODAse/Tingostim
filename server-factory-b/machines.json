@@ -1,0 +1,141 @@
+{
+  "machines": [
+    {
+      "id": "b1",
+      "name": "CNC Lathe TL-7",
+      "type": "CNC Turning",
+      "factory": "Factory B",
+      "location": "Ostim, Ankara, TR",
+      "status": "idle",
+      "capacity": 55,
+      "hourly_rate": 75,
+      "available_from": "2026-04-03",
+      "specs": "Ø400mm swing, 1000mm between centers",
+      "image": "cnc"
+    },
+    {
+      "id": "b2",
+      "name": "Waterjet Cutter WJ-2",
+      "type": "Waterjet Cutting",
+      "factory": "Factory B",
+      "location": "Ostim, Ankara, TR",
+      "status": "idle",
+      "capacity": 30,
+      "hourly_rate": 110,
+      "available_from": "2026-04-04",
+      "specs": "4000x2000mm, 6000 bar, any material",
+      "image": "laser"
+    },
+    {
+      "id": "b3",
+      "name": "Sheet Metal Bender SMB-4",
+      "type": "Sheet Metal",
+      "factory": "Factory B",
+      "location": "Ostim, Ankara, TR",
+      "status": "busy",
+      "capacity": 100,
+      "hourly_rate": 55,
+      "available_from": "2026-04-11",
+      "specs": "3m bed, 160T, up to 12mm steel",
+      "image": "press"
+    },
+    {
+      "id": "b4",
+      "name": "SLA Resin Printer R2",
+      "type": "3D Printing",
+      "factory": "Factory B",
+      "location": "Ostim, Ankara, TR",
+      "status": "idle",
+      "capacity": 45,
+      "hourly_rate": 50,
+      "available_from": "2026-04-03",
+      "specs": "300x300x400mm, 25 micron resolution",
+      "image": "print"
+    },
+    {
+      "id": "b5",
+      "name": "EDM Machine EDM-1",
+      "type": "EDM",
+      "factory": "Factory B",
+      "location": "Ostim, Ankara, TR",
+      "status": "maintenance",
+      "capacity": 0,
+      "hourly_rate": 130,
+      "available_from": "2026-04-20",
+      "specs": "Wire & sinker EDM, hardened steel capable",
+      "image": "cnc"
+    },
+    {
+      "id": "b6",
+      "name": "Powder Coat Booth PC-1",
+      "type": "Surface Finishing",
+      "factory": "Factory B",
+      "location": "Ostim, Ankara, TR",
+      "status": "idle",
+      "capacity": 70,
+      "hourly_rate": 40,
+      "available_from": "2026-04-03",
+      "specs": "2x2x3m booth, full RAL color range",
+      "image": "weld"
+    }
+  ],
+  "trending": [
+    {
+      "id": "t6",
+      "category": "Waterjet Cutting",
+      "demand_score": 79,
+      "change": 15,
+      "total_requests": 105,
+      "top_product": "Composite material panels",
+      "description": "Cold-cut solution for heat-sensitive materials"
+    },
+    {
+      "id": "t7",
+      "category": "Sheet Metal",
+      "demand_score": 74,
+      "change": 6,
+      "total_requests": 89,
+      "top_product": "HVAC ductwork",
+      "description": "Bending and forming for construction and HVAC industries"
+    },
+    {
+      "id": "t8",
+      "category": "Surface Finishing",
+      "demand_score": 68,
+      "change": 18,
+      "total_requests": 76,
+      "top_product": "Powder coated furniture frames",
+      "description": "Durable coating for metal furniture and fixtures"
+    },
+    {
+      "id": "t9",
+      "category": "EDM",
+      "demand_score": 63,
+      "change": -2,
+      "total_requests": 54,
+      "top_product": "Hardened die inserts",
+      "description": "Precision machining of hardened tool steels"
+    },
+    {
+      "id": "t10",
+      "category": "CNC Turning",
+      "demand_score": 85,
+      "change": 10,
+      "total_requests": 143,
+      "top_product": "Precision shaft components",
+      "description": "High-volume turning for automotive drivetrain parts"
+    }
+  ],
+  "leaderboard": [
+    {
+      "id": "l2",
+      "factory_name": "Factory B",
+      "jobs_completed": 289,
+      "revenue": 41200,
+      "uptime": 93.2,
+      "rating": 4.6,
+      "specialty": "Cutting & Surface Treatment",
+      "streak": 8
+    }
+  ]
+}

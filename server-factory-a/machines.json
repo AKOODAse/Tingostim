@@ -1,0 +1,141 @@
+{
+  "machines": [
+    {
+      "id": "a1",
+      "name": "CNC Mill Alpha",
+      "type": "CNC Milling",
+      "factory": "Factory A",
+      "location": "Ostim, Ankara, TR",
+      "status": "idle",
+      "capacity": 75,
+      "hourly_rate": 85,
+      "available_from": "2026-04-03",
+      "specs": "5-axis, 800x600mm table, ±0.01mm tolerance",
+      "image": "cnc"
+    },
+    {
+      "id": "a2",
+      "name": "Laser Cutter L1",
+      "type": "Laser Cutting",
+      "factory": "Factory A",
+      "location": "Ostim, Ankara, TR",
+      "status": "busy",
+      "capacity": 100,
+      "hourly_rate": 60,
+      "available_from": "2026-04-08",
+      "specs": "CO2 1500W, 1200x900mm bed, metals & plastics",
+      "image": "laser"
+    },
+    {
+      "id": "a3",
+      "name": "Injection Molder IM-3",
+      "type": "Injection Molding",
+      "factory": "Factory A",
+      "location": "Ostim, Ankara, TR",
+      "status": "idle",
+      "capacity": 40,
+      "hourly_rate": 120,
+      "available_from": "2026-04-03",
+      "specs": "250T clamp force, 500g shot weight",
+      "image": "mold"
+    },
+    {
+      "id": "a4",
+      "name": "Robotic Welder RW-1",
+      "type": "Welding",
+      "factory": "Factory A",
+      "location": "Ostim, Ankara, TR",
+      "status": "maintenance",
+      "capacity": 0,
+      "hourly_rate": 95,
+      "available_from": "2026-04-12",
+      "specs": "6-axis arm, MIG/TIG, 2m reach",
+      "image": "weld"
+    },
+    {
+      "id": "a5",
+      "name": "3D Printer FDM-5",
+      "type": "3D Printing",
+      "factory": "Factory A",
+      "location": "Ostim, Ankara, TR",
+      "status": "idle",
+      "capacity": 60,
+      "hourly_rate": 35,
+      "available_from": "2026-04-03",
+      "specs": "600x600x600mm, PLA/ABS/PETG/Nylon",
+      "image": "print"
+    },
+    {
+      "id": "a6",
+      "name": "Hydraulic Press HP-2",
+      "type": "Pressing",
+      "factory": "Factory A",
+      "location": "Ostim, Ankara, TR",
+      "status": "busy",
+      "capacity": 90,
+      "hourly_rate": 70,
+      "available_from": "2026-04-15",
+      "specs": "200T force, 800x600mm bed",
+      "image": "press"
+    }
+  ],
+  "trending": [
+    {
+      "id": "t1",
+      "category": "CNC Milling",
+      "demand_score": 94,
+      "change": 12,
+      "total_requests": 187,
+      "top_product": "Automotive gear housings",
+      "description": "High-precision CNC parts for automotive and aerospace sectors"
+    },
+    {
+      "id": "t2",
+      "category": "3D Printing",
+      "demand_score": 88,
+      "change": 24,
+      "total_requests": 156,
+      "top_product": "Rapid prototyping molds",
+      "description": "FDM and SLA printing for prototyping and small-batch production"
+    },
+    {
+      "id": "t3",
+      "category": "Laser Cutting",
+      "demand_score": 82,
+      "change": 8,
+      "total_requests": 134,
+      "top_product": "Sheet metal enclosures",
+      "description": "Precision cutting for electronics and industrial enclosures"
+    },
+    {
+      "id": "t4",
+      "category": "Injection Molding",
+      "demand_score": 76,
+      "change": -3,
+      "total_requests": 112,
+      "top_product": "Plastic connector parts",
+      "description": "Mass production of plastic components for electronics"
+    },
+    {
+      "id": "t5",
+      "category": "Welding",
+      "demand_score": 71,
+      "change": 5,
+      "total_requests": 98,
+      "top_product": "Steel frame assemblies",
+      "description": "Robotic and manual welding for structural components"
+    }
+  ],
+  "leaderboard": [
+    {
+      "id": "l1",
+      "factory_name": "Factory A",
+      "jobs_completed": 342,
+      "revenue": 48500,
+      "uptime": 96.5,
+      "rating": 4.8,
+      "specialty": "CNC & Precision Machining",
+      "streak": 14
+    }
+  ]
+}
