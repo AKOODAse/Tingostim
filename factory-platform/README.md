@@ -1,4 +1,3 @@
-
 # FactoryLink — B2B Industrial Capacity Platform
 ## Graduation Project Demo
 
@@ -112,7 +111,3 @@ npx vercel   # or: npx netlify deploy --prod --dir=dist
 - B2B platform: machine discovery, capacity visibility, rental workflow
 - Agile: 3-week sprint, iterative delivery, MVP scope
 - Future work: real Odoo ERP sync, authentication, booking database
-
-# Tingostim
-B2B Platform for Industrial Capacity Sharing and Idle Machine Management (Ostim Connected Factories)
-

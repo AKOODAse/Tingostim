@@ -1,0 +1,82 @@
+{
+  "machines": [
+    {
+      "id": "b1",
+      "name": "CNC Lathe TL-7",
+      "type": "CNC Turning",
+      "factory": "Factory B",
+      "location": "Ankara, TR",
+      "status": "idle",
+      "capacity": 55,
+      "hourly_rate": 75,
+      "available_from": "2026-04-03",
+      "specs": "Ø400mm swing, 1000mm between centers",
+      "image": "cnc"
+    },
+    {
+      "id": "b2",
+      "name": "Waterjet Cutter WJ-2",
+      "type": "Waterjet Cutting",
+      "factory": "Factory B",
+      "location": "Ankara, TR",
+      "status": "idle",
+      "capacity": 30,
+      "hourly_rate": 110,
+      "available_from": "2026-04-04",
+      "specs": "4000x2000mm, 6000 bar, any material",
+      "image": "laser"
+    },
+    {
+      "id": "b3",
+      "name": "Sheet Metal Bender SMB-4",
+      "type": "Sheet Metal",
+      "factory": "Factory B",
+      "location": "Ankara, TR",
+      "status": "busy",
+      "capacity": 100,
+      "hourly_rate": 55,
+      "available_from": "2026-04-11",
+      "specs": "3m bed, 160T, up to 12mm steel",
+      "image": "press"
+    },
+    {
+      "id": "b4",
+      "name": "SLA Resin Printer R2",
+      "type": "3D Printing",
+      "factory": "Factory B",
+      "location": "Ankara, TR",
+      "status": "idle",
+      "capacity": 45,
+      "hourly_rate": 50,
+      "available_from": "2026-04-03",
+      "specs": "300x300x400mm, 25 micron resolution",
+      "image": "print"
+    },
+    {
+      "id": "b5",
+      "name": "EDM Machine EDM-1",
+      "type": "EDM",
+      "factory": "Factory B",
+      "location": "Ankara, TR",
+      "status": "maintenance",
+      "capacity": 0,
+      "hourly_rate": 130,
+      "available_from": "2026-04-20",
+      "specs": "Wire & sinker EDM, hardened steel capable",
+      "image": "cnc"
+    },
+    {
+      "id": "b6",
+      "name": "Powder Coat Booth PC-1",
+      "type": "Surface Finishing",
+      "factory": "Factory B",
+      "location": "Ankara, TR",
+      "status": "idle",
+      "capacity": 70,
+      "hourly_rate": 40,
+      "available_from": "2026-04-03",
+      "specs": "2x2x3m booth, full RAL color range",
+      "image": "weld"
+    }
+  ]
+}
