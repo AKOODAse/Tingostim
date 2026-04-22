@@ -18,7 +18,6 @@ const FACTORY_BIOS = {
 export default function FactorySpotlight({ machines, factories }) {
   const [featuredIdx, setFeaturedIdx] = useState(0)
 
-  // Rotate spotlight every 10s
   useEffect(() => {
     const interval = setInterval(() => {
       setFeaturedIdx(i => (i + 1) % factories.length)
@@ -39,40 +38,36 @@ export default function FactorySpotlight({ machines, factories }) {
 
   return (
     <div style={{
-      background: `linear-gradient(135deg, ${factory.color}08, ${factory.color}15)`,
-      border: `1px solid ${factory.color}30`,
-      borderRadius: 16,
+      background: '#18181B',
+      border: '2px solid #2D2A30',
+      borderLeft: `8px solid ${factory.color}`,
       padding: 24,
       marginBottom: 24,
       position: 'relative',
-      overflow: 'hidden',
+      boxShadow: `6px 6px 0 ${factory.color}30`,
     }}>
-      {/* Accent line */}
-      <div style={{
-        position: 'absolute', top: 0, left: 0, right: 0, height: 2,
-        background: `linear-gradient(90deg, ${factory.color}, transparent)`,
-      }} />
-
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 24 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 24, flexWrap: 'wrap' }}>
         {/* Left: info */}
-        <div style={{ flex: 1 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+        <div style={{ flex: 1, minWidth: 300 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12, flexWrap: 'wrap' }}>
             <span style={{
-              fontSize: 10, fontWeight: 700, padding: '3px 10px', borderRadius: 12,
-              background: `${factory.color}20`, color: factory.color,
-              textTransform: 'uppercase', letterSpacing: '0.08em',
+              fontSize: 10, fontWeight: 700, padding: '4px 12px',
+              background: factory.color, color: '#18181B',
+              textTransform: 'uppercase', letterSpacing: '0.1em',
+              fontFamily: 'Space Mono, monospace',
             }}>
-              Factory Spotlight
+              ◆ Factory Spotlight
             </span>
-            <div style={{ display: 'flex', gap: 4 }}>
+            <div style={{ display: 'flex', gap: 6 }}>
               {factories.map((f, i) => (
                 <button
                   key={f.id}
                   onClick={() => setFeaturedIdx(i)}
                   style={{
-                    width: 8, height: 8, borderRadius: '50%',
-                    background: i === featuredIdx ? factory.color : '#2a2a32',
-                    border: 'none', cursor: 'pointer', padding: 0,
+                    width: 14, height: 14,
+                    background: i === featuredIdx ? factory.color : '#0A0A0C',
+                    border: `2px solid ${i === featuredIdx ? factory.color : '#2D2A30'}`,
+                    cursor: 'pointer', padding: 0,
                     transition: 'background 0.2s',
                   }}
                 />
@@ -80,32 +75,42 @@ export default function FactorySpotlight({ machines, factories }) {
             </div>
           </div>
 
-          <div style={{ fontSize: 18, fontWeight: 700, color: '#e8e8f0', marginBottom: 4 }}>
+          <div style={{
+            fontSize: 24, fontWeight: 700, color: '#F4F2F0', marginBottom: 6,
+            fontFamily: 'Space Mono, monospace', textTransform: 'uppercase', letterSpacing: '0.04em',
+          }}>
             {factory.name}
           </div>
           {bio.highlight && (
-            <div style={{ fontSize: 12, color: factory.color, marginBottom: 10 }}>
-              {bio.highlight}
+            <div style={{
+              fontSize: 12, color: factory.color, marginBottom: 12,
+              fontFamily: 'Space Mono, monospace', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: 700,
+            }}>
+              ▸ {bio.highlight}
             </div>
           )}
-          <div style={{ fontSize: 13, color: '#7a7a8e', lineHeight: 1.6, maxWidth: 500 }}>
+          <div style={{ fontSize: 13, color: '#8A8688', lineHeight: 1.6, maxWidth: 500 }}>
             {bio.bio || 'A manufacturing facility in Ostim Industrial Zone.'}
           </div>
         </div>
 
         {/* Right: quick stats */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 10, flexShrink: 0 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 8, flexShrink: 0 }}>
           {[
-            { label: 'Machines', value: fMachines.length, color: '#e8e8f0' },
-            { label: 'Idle', value: idle, color: '#00e5a0' },
-            { label: 'Avg load', value: `${avgCap}%`, color: avgCap > 80 ? '#ff4d4d' : avgCap > 50 ? '#f5a623' : '#00e5a0' },
-            { label: 'Total rate', value: `€${totalRate}/hr`, color: factory.color },
+            { label: 'Machines', value: fMachines.length, color: '#F4F2F0' },
+            { label: 'Idle', value: idle, color: '#4FB39F' },
+            { label: 'Avg Load', value: `${avgCap}%`, color: avgCap > 80 ? '#E83828' : avgCap > 50 ? '#E8A33B' : '#4FB39F' },
+            { label: 'Total Rate', value: `€${totalRate}/HR`, color: factory.color },
           ].map(stat => (
             <div key={stat.label} style={{
-              background: '#0a0a0b', borderRadius: 10, padding: '10px 14px',
-              minWidth: 100, textAlign: 'center',
+              background: '#0A0A0C', border: '2px solid #2D2A30',
+              padding: '12px 14px',
+              minWidth: 110, textAlign: 'center',
             }}>
-              <div style={{ fontSize: 10, color: '#3a3a46', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 4 }}>
+              <div style={{
+                fontSize: 9, color: '#8A8688', textTransform: 'uppercase', letterSpacing: '0.1em',
+                marginBottom: 4, fontFamily: 'Space Mono, monospace', fontWeight: 700,
+              }}>
                 {stat.label}
               </div>
               <div style={{ fontSize: 18, fontWeight: 700, fontFamily: 'Space Mono, monospace', color: stat.color }}>

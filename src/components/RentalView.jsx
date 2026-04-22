@@ -2,53 +2,79 @@ import { useState } from 'react'
 
 export default function RentalView({ machines }) {
   const [submitted, setSubmitted] = useState(null)
-  const [form, setForm] = useState({ company: '', email: '', date: '', notes: '' })
+  const [submittedCompany, setSubmittedCompany] = useState('')
 
   const idle = machines.filter(m => m.status === 'idle')
 
-  const handleSubmit = (machine) => {
-    if (!form.company || !form.email || !form.date) {
-      alert('Please fill in company, email, and date.')
-      return
-    }
+  const handleSubmit = (machine, company) => {
     setSubmitted(machine)
+    setSubmittedCompany(company)
   }
 
   if (submitted) {
     return (
-      <div style={{ maxWidth: 520, margin: '60px auto', textAlign: 'center' }}>
+      <div style={{ maxWidth: 560, margin: '60px auto', textAlign: 'center' }}>
         <div style={{
-          background: 'rgba(0,229,160,0.06)', border: '1px solid rgba(0,229,160,0.2)',
-          borderRadius: 18, padding: 40,
+          background: '#18181B',
+          border: '3px solid #4FB39F',
+          padding: 40,
+          boxShadow: '8px 8px 0 #0A0A0C',
+          position: 'relative',
         }}>
-          <div style={{ fontSize: 40, marginBottom: 16 }}>✓</div>
-          <div style={{ fontSize: 18, fontWeight: 600, color: '#00e5a0', marginBottom: 8 }}>
-            Rental request submitted
-          </div>
-          <div style={{ fontSize: 14, color: '#7a7a8e', marginBottom: 6 }}>
-            Machine: <span style={{ color: '#e8e8f0' }}>{submitted.name}</span>
-          </div>
-          <div style={{ fontSize: 14, color: '#7a7a8e', marginBottom: 6 }}>
-            Factory: <span style={{ color: '#e8e8f0' }}>{submitted.factory}</span>
-          </div>
-          <div style={{ fontSize: 14, color: '#7a7a8e', marginBottom: 24 }}>
-            Requested by: <span style={{ color: '#e8e8f0' }}>{form.company}</span>
+          <div style={{
+            position: 'absolute', top: -2, left: -2, right: -2, height: 6,
+            background: '#4FB39F',
+          }} />
+          <div style={{
+            fontSize: 48, marginBottom: 16, color: '#4FB39F',
+            fontFamily: 'Space Mono, monospace', fontWeight: 700,
+          }}>
+            ✓
           </div>
           <div style={{
-            background: '#0d0d10', borderRadius: 10, padding: '12px 16px',
-            fontSize: 12, color: '#3a3a46', fontFamily: 'Space Mono, monospace', marginBottom: 24,
-            textAlign: 'left',
+            fontSize: 18, fontWeight: 700, color: '#4FB39F', marginBottom: 16,
+            fontFamily: 'Space Mono, monospace',
+            textTransform: 'uppercase', letterSpacing: '0.08em',
           }}>
-            In production: this request would create a booking record in Tingostim and notify the factory operator.
+            ▣ Rental Request Submitted
+          </div>
+          <div style={{
+            background: '#25252A', border: '2px solid #2D2A30',
+            padding: 16, marginBottom: 20, textAlign: 'left',
+            fontFamily: 'Space Mono, monospace', fontSize: 12,
+          }}>
+            <div style={{ color: '#8A8688', marginBottom: 6 }}>
+              MACHINE: <span style={{ color: '#F4F2F0', fontWeight: 700 }}>{submitted.name}</span>
+            </div>
+            <div style={{ color: '#8A8688', marginBottom: 6 }}>
+              FACTORY: <span style={{ color: '#F4F2F0', fontWeight: 700 }}>{submitted.factory}</span>
+            </div>
+            <div style={{ color: '#8A8688' }}>
+              REQUESTED BY: <span style={{ color: '#F4F2F0', fontWeight: 700 }}>{submittedCompany}</span>
+            </div>
+          </div>
+          <div style={{
+            background: '#0A0A0C', border: '1px dashed #2D2A30',
+            padding: '12px 16px',
+            fontSize: 11, color: '#8A8688', fontFamily: 'Space Mono, monospace',
+            marginBottom: 24, textAlign: 'left',
+            textTransform: 'uppercase', letterSpacing: '0.04em', lineHeight: 1.6,
+          }}>
+            ▸ In production: this request would create a booking record in MNtory and notify the factory operator.
           </div>
           <button
-            onClick={() => { setSubmitted(null); setForm({ company: '', email: '', date: '', notes: '' }) }}
+            onClick={() => { setSubmitted(null); setSubmittedCompany('') }}
             style={{
-              padding: '10px 28px', borderRadius: 10, background: 'transparent',
-              border: '1px solid #2a2a32', color: '#7a7a8e', fontSize: 13, cursor: 'pointer',
+              padding: '12px 32px', background: '#E83828',
+              border: 'none', color: '#18181B',
+              fontSize: 12, fontWeight: 700, cursor: 'pointer',
+              fontFamily: 'Space Mono, monospace',
+              textTransform: 'uppercase', letterSpacing: '0.1em',
             }}
+            onMouseEnter={e => { e.currentTarget.style.background = '#E8A33B' }}
+            onMouseLeave={e => { e.currentTarget.style.background = '#E83828' }}
           >
-            Back to listings
+            ◀ Back to Listings
           </button>
         </div>
       </div>
@@ -58,111 +84,162 @@ export default function RentalView({ machines }) {
   return (
     <div>
       <div style={{ marginBottom: 28 }}>
-        <h2 style={{ fontSize: 20, fontWeight: 500, color: '#e8e8f0', marginBottom: 6 }}>Idle machine rentals</h2>
-        <p style={{ fontSize: 13, color: '#7a7a8e' }}>
-          {idle.length} machine{idle.length !== 1 ? 's' : ''} available for rental across all factories.
-          Reserve capacity now for your production schedule.
+        <h2 style={{
+          fontSize: 22, fontWeight: 700, color: '#F4F2F0', marginBottom: 8,
+          fontFamily: 'Space Mono, monospace', textTransform: 'uppercase', letterSpacing: '0.04em',
+        }}>
+          ▣ Idle Machine Rentals
+        </h2>
+        <p style={{ fontSize: 12, color: '#8A8688', fontFamily: 'Space Mono, monospace', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+          [{idle.length}] machine{idle.length !== 1 ? 's' : ''} available · Reserve capacity for your production schedule.
         </p>
       </div>
 
       {idle.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '80px 0', color: '#3a3a46' }}>
-          No idle machines at the moment. Check back soon.
+        <div style={{
+          textAlign: 'center', padding: '80px 0', color: '#8A8688',
+          background: '#18181B', border: '2px dashed #2D2A30',
+          fontFamily: 'Space Mono, monospace', textTransform: 'uppercase', letterSpacing: '0.08em', fontSize: 12,
+        }}>
+          ⌧ No idle machines at the moment. Check back soon.
         </div>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
           {idle.map(m => (
-            <div key={m.id} style={{
-              background: '#111114', border: '1px solid #2a2a32',
-              borderRadius: 14, padding: 24, display: 'grid',
-              gridTemplateColumns: '1fr auto', gap: 24, alignItems: 'start',
-            }}>
-              {/* Left: info */}
-              <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
-                  <span style={{ width: 8, height: 8, borderRadius: 2, background: m._factory?.color || '#7a7a8e', display: 'inline-block' }} />
-                  <span style={{ fontSize: 16, fontWeight: 600, color: '#e8e8f0' }}>{m.name}</span>
-                  <span style={{
-                    fontSize: 11, padding: '2px 8px', borderRadius: 20,
-                    background: 'rgba(0,229,160,0.08)', border: '1px solid rgba(0,229,160,0.2)', color: '#00e5a0',
-                  }}>idle</span>
-                </div>
-                <div style={{ fontSize: 13, color: '#7a7a8e', marginBottom: 4 }}>
-                  {m.factory} · {m.location}
-                </div>
-                <div style={{ fontSize: 13, color: '#7a7a8e', marginBottom: 12 }}>
-                  Type: <span style={{ color: '#e8e8f0' }}>{m.type}</span>
-                </div>
-                <div style={{
-                  background: '#0d0d10', borderRadius: 8, padding: '10px 14px',
-                  fontSize: 12, color: '#7a7a8e', fontFamily: 'Space Mono, monospace', marginBottom: 12,
-                }}>
-                  {m.specs}
-                </div>
-                <div style={{ fontSize: 13, color: '#7a7a8e' }}>
-                  Available from <span style={{ color: '#e8e8f0', fontWeight: 500 }}>{m.available_from}</span>
-                  <span style={{ margin: '0 12px', color: '#2a2a32' }}>|</span>
-                  Capacity available: <span style={{ color: '#00e5a0', fontWeight: 500 }}>{100 - m.capacity}%</span>
-                </div>
-              </div>
-
-              {/* Right: booking form */}
-              <div style={{
-                background: '#0d0d10', border: '1px solid #2a2a32', borderRadius: 12,
-                padding: '18px 20px', minWidth: 260,
-              }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 16 }}>
-                  <span style={{ fontSize: 11, color: '#7a7a8e', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Rate</span>
-                  <span style={{ fontFamily: 'Space Mono, monospace', fontSize: 18, fontWeight: 700, color: '#00e5a0' }}>
-                    €{m.hourly_rate}/hr
-                  </span>
-                </div>
-                {[
-                  ['company', 'Company name', 'text'],
-                  ['email', 'Email', 'email'],
-                  ['date', 'Requested date', 'date'],
-                ].map(([field, placeholder, type]) => (
-                  <input
-                    key={field}
-                    type={type}
-                    placeholder={placeholder}
-                    value={form[field]}
-                    onChange={e => setForm(f => ({ ...f, [field]: e.target.value }))}
-                    style={{
-                      display: 'block', width: '100%', marginBottom: 8,
-                      background: '#111114', border: '1px solid #2a2a32', borderRadius: 8,
-                      padding: '8px 12px', color: '#e8e8f0', fontSize: 13, outline: 'none',
-                    }}
-                  />
-                ))}
-                <textarea
-                  placeholder="Notes (optional)"
-                  value={form.notes}
-                  onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
-                  rows={2}
-                  style={{
-                    display: 'block', width: '100%', marginBottom: 12,
-                    background: '#111114', border: '1px solid #2a2a32', borderRadius: 8,
-                    padding: '8px 12px', color: '#e8e8f0', fontSize: 13, outline: 'none',
-                    resize: 'vertical', fontFamily: 'DM Sans, sans-serif',
-                  }}
-                />
-                <button
-                  onClick={() => handleSubmit(m)}
-                  style={{
-                    width: '100%', padding: '10px 0',
-                    background: 'rgba(0,229,160,0.1)', border: '1px solid rgba(0,229,160,0.3)',
-                    borderRadius: 8, color: '#00e5a0', fontSize: 13, fontWeight: 500,
-                    cursor: 'pointer', transition: 'all 0.15s',
-                  }}
-                >
-                  Request this machine
-                </button>
-              </div>
-            </div>
+            <RentalCard key={m.id} machine={m} onSubmit={handleSubmit} />
           ))}
         </div>
       )}
+    </div>
+  )
+}
+
+// Per-machine rental card with isolated form state — fixes shared-state bug
+function RentalCard({ machine: m, onSubmit }) {
+  const [form, setForm] = useState({ company: '', email: '', date: '', notes: '' })
+
+  const submit = () => {
+    if (!form.company || !form.email || !form.date) {
+      alert('Please fill in company, email, and date.')
+      return
+    }
+    onSubmit(m, form.company)
+  }
+
+  const inputStyle = {
+    display: 'block', width: '100%', marginBottom: 10,
+    background: '#18181B', border: '2px solid #2D2A30',
+    padding: '9px 12px', color: '#F4F2F0', fontSize: 12, outline: 'none',
+    fontFamily: 'Space Mono, monospace',
+  }
+
+  return (
+    <div style={{
+      background: '#18181B',
+      border: '2px solid #2D2A30',
+      borderLeft: '5px solid #4FB39F',
+      padding: 24, display: 'grid',
+      gridTemplateColumns: '1fr auto', gap: 24, alignItems: 'start',
+    }}>
+      {/* Left: info */}
+      <div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12, flexWrap: 'wrap' }}>
+          <span style={{
+            width: 12, height: 12,
+            background: m._factory?.color || '#8A8688',
+            display: 'inline-block', border: '1px solid #18181B',
+          }} />
+          <span style={{
+            fontSize: 16, fontWeight: 700, color: '#F4F2F0',
+            fontFamily: 'Space Mono, monospace', textTransform: 'uppercase', letterSpacing: '0.02em',
+          }}>
+            {m.name}
+          </span>
+          <span style={{
+            fontSize: 10, padding: '3px 10px',
+            background: '#4FB39F', color: '#18181B', fontWeight: 700,
+            fontFamily: 'Space Mono, monospace',
+            textTransform: 'uppercase', letterSpacing: '0.08em',
+          }}>
+            ■ Idle
+          </span>
+        </div>
+        <div style={{ fontSize: 11, color: '#8A8688', marginBottom: 6, fontFamily: 'Space Mono, monospace', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+          {m.factory} · {m.location}
+        </div>
+        <div style={{ fontSize: 11, color: '#8A8688', marginBottom: 14, fontFamily: 'Space Mono, monospace', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+          Type: <span style={{ color: '#F4F2F0', fontWeight: 700 }}>{m.type}</span>
+        </div>
+        <div style={{
+          background: '#25252A', border: '2px solid #2D2A30',
+          padding: '10px 14px',
+          fontSize: 12, color: '#F4F2F0', fontFamily: 'Space Mono, monospace', marginBottom: 14,
+        }}>
+          ▸ {m.specs}
+        </div>
+        <div style={{ fontSize: 11, color: '#8A8688', fontFamily: 'Space Mono, monospace', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+          Available from <span style={{ color: '#F4F2F0', fontWeight: 700 }}>{m.available_from}</span>
+          <span style={{ margin: '0 14px', color: '#2D2A30' }}>│</span>
+          Capacity available: <span style={{ color: '#4FB39F', fontWeight: 700 }}>{100 - m.capacity}%</span>
+        </div>
+      </div>
+
+      {/* Right: booking form */}
+      <div style={{
+        background: '#0A0A0C', border: '2px solid #2D2A30',
+        padding: '18px 20px', minWidth: 280,
+      }}>
+        <div style={{
+          display: 'flex', justifyContent: 'space-between', alignItems: 'baseline',
+          marginBottom: 16, paddingBottom: 12, borderBottom: '2px solid #2D2A30',
+        }}>
+          <span style={{
+            fontSize: 10, color: '#8A8688', fontFamily: 'Space Mono, monospace',
+            textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 700,
+          }}>
+            ▣ Rate
+          </span>
+          <span style={{ fontFamily: 'Space Mono, monospace', fontSize: 20, fontWeight: 700, color: '#E83828' }}>
+            €{m.hourly_rate}/HR
+          </span>
+        </div>
+        {[
+          ['company', 'COMPANY NAME', 'text'],
+          ['email', 'EMAIL', 'email'],
+          ['date', 'REQUESTED DATE', 'date'],
+        ].map(([field, placeholder, type]) => (
+          <input
+            key={field}
+            type={type}
+            placeholder={placeholder}
+            value={form[field]}
+            onChange={e => setForm(f => ({ ...f, [field]: e.target.value }))}
+            style={inputStyle}
+          />
+        ))}
+        <textarea
+          placeholder="NOTES (OPTIONAL)"
+          value={form.notes}
+          onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
+          rows={2}
+          style={{ ...inputStyle, marginBottom: 14, resize: 'vertical' }}
+        />
+        <button
+          onClick={submit}
+          style={{
+            width: '100%', padding: '12px 0',
+            background: '#E83828', border: 'none',
+            color: '#18181B', fontSize: 12, fontWeight: 700, cursor: 'pointer',
+            fontFamily: 'Space Mono, monospace',
+            textTransform: 'uppercase', letterSpacing: '0.1em',
+            transition: 'background 0.1s',
+          }}
+          onMouseEnter={e => { e.currentTarget.style.background = '#E8A33B' }}
+          onMouseLeave={e => { e.currentTarget.style.background = '#E83828' }}
+        >
+          ▶ Request This Machine
+        </button>
+      </div>
     </div>
   )
 }

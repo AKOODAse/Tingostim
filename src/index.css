@@ -1,22 +1,30 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg:       #0a0a0b;
-  --bg2:      #111114;
-  --bg3:      #18181d;
-  --border:   #2a2a32;
-  --border2:  #3a3a46;
-  --text:     #e8e8f0;
-  --muted:    #7a7a8e;
-  --accent:   #00e5a0;
-  --accent2:  #005f42;
-  --amber:    #f5a623;
-  --red:      #ff4d4d;
-  --blue:     #4d9fff;
-  --mono:     'Space Mono', monospace;
-  --sans:     'DM Sans', sans-serif;
-  --radius:   10px;
-  --radius-lg: 16px;
+  --bg:        #0A0A0C;
+  --bg2:       #18181B;
+  --bg3:       #050507;
+  --panel:     #18181B;
+  --border:    #2D2A30;
+  --border2:   #3D3A40;
+  --text:      #F4F2F0;
+  --muted:     #8A8688;
+  --dim:       #5A5658;
+  --accent:    #E83828;
+  --accent2:   #FF6B4A;
+  --teal:      #4FB39F;
+  --amber:     #E8A33B;
+  --brand:     #E83828;
+  --red:       #E83828;
+  --sage:      #4FB39F;
+  --orange:    #E83828;
+  --tan:       #E8A33B;
+  --cream:     #F4F2F0;
+  --blue:      #4FB39F;
+  --mono:      'Space Mono', monospace;
+  --sans:      'DM Sans', sans-serif;
+  --radius:    0px;
+  --radius-lg: 0px;
 }
 
 html { scroll-behavior: smooth; }
@@ -25,15 +33,28 @@ body {
   color: var(--text);
   font-family: var(--sans);
   font-size: 15px;
-  line-height: 1.6;
+  line-height: 1.55;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
+  background-image:
+    repeating-linear-gradient(0deg, transparent 0 39px, rgba(244,242,240,0.018) 39px 40px),
+    repeating-linear-gradient(90deg, transparent 0 39px, rgba(244,242,240,0.018) 39px 40px);
 }
 
-/* scrollbar */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: var(--bg2); }
-::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+/* scrollbar - brutalism block */
+::-webkit-scrollbar { width: 12px; height: 12px; }
+::-webkit-scrollbar-track { background: var(--bg3); border-left: 2px solid var(--border); }
+::-webkit-scrollbar-thumb { background: var(--accent); border: 2px solid var(--bg3); }
+::-webkit-scrollbar-thumb:hover { background: var(--accent2); }
 
-button { cursor: pointer; border: none; background: none; font-family: var(--sans); }
-input, select { font-family: var(--sans); }
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+input, select, textarea { font-family: var(--mono); }
+
+::selection { background: var(--accent); color: var(--bg3); }
