@@ -1,0 +1,24 @@
+# Node / Vite
+node_modules/
+dist/
+.vite/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local env
+.env
+.env.local
+.env.*.local
+
+# Python (telemetry simulator + Odoo module)
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
