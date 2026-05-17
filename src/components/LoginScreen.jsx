@@ -7,6 +7,7 @@ export default function LoginScreen({ onAuthenticated }) {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
+  const [showDb, setShowDb] = useState(false)
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -59,13 +60,6 @@ export default function LoginScreen({ onAuthenticated }) {
         </div>
 
         <Field
-          label="Database"
-          value={db}
-          onChange={setDb}
-          autoComplete="off"
-          disabled={busy}
-        />
-        <Field
           label="Login"
           value={loginName}
           onChange={setLoginName}
@@ -81,6 +75,39 @@ export default function LoginScreen({ onAuthenticated }) {
           autoComplete="current-password"
           disabled={busy}
         />
+
+        {showDb && (
+          <Field
+            label="Database"
+            value={db}
+            onChange={setDb}
+            autoComplete="off"
+            disabled={busy}
+          />
+        )}
+
+        <button
+          type="button"
+          onClick={() => setShowDb(v => !v)}
+          disabled={busy}
+          style={{
+            background: 'transparent',
+            border: 'none',
+            padding: 0,
+            marginTop: -4,
+            marginBottom: 4,
+            color: '#8A8688',
+            fontFamily: 'Space Mono, monospace',
+            fontSize: 10,
+            letterSpacing: '0.08em',
+            textTransform: 'uppercase',
+            cursor: busy ? 'wait' : 'pointer',
+          }}
+          onMouseEnter={(e) => { if (!busy) e.currentTarget.style.color = '#F4F2F0' }}
+          onMouseLeave={(e) => { e.currentTarget.style.color = '#8A8688' }}
+        >
+          {showDb ? '▴ Hide database field' : '▾ Use a different database'}
+        </button>
 
         {error && (
           <div style={{

@@ -59,29 +59,28 @@ Factory floor ─POST /machines/<id>/log─►  Odoo  (real agent — future wor
 
 ## Quick start
 
-**Prereqs**: Docker, Node 18+. Containers `odoo` (image `odoo:18`) and `db` (image `postgres:15`, linked as `db`) already running. The custom module lives in the Odoo container's `/mnt/extra-addons` volume.
+**Prereqs**: Docker (with `docker compose`), Node 18+, Python 3.10+. Nothing else needs to be pre-installed — `scripts/setup.sh` brings up Postgres + Odoo + the custom module from scratch.
 
 ```bash
-# 1. Sync the module into the Odoo container and install/upgrade
-docker exec -u root odoo rm -rf /mnt/extra-addons/tingostim
-docker cp odoo-addon/tingostim odoo:/mnt/extra-addons/tingostim
-docker exec odoo /entrypoint.sh odoo -d E-fatura -u tingostim --stop-after-init --no-http
-docker restart odoo                # pick up the new controllers
+# 1. Bring up containers, create DB, install module, provision factory users
+./scripts/setup.sh                       # prompts for admin + factory passwords
 
 # 2. Run the React app
 npm install
-npm run dev                        # http://localhost:5173
+npm run dev                              # http://localhost:5173
 
 # 3. Log in (LoginScreen — closed system, no signup)
-#    factory.a / tingostim2026     → Factory A user
-#    factory.b / tingostim2026     → Factory B user
+#    factory.a / <password you just set>  → Factory A user
+#    factory.b / <password you just set>  → Factory B user
 
 # 4. Watch live status flips during the demo
-python3 -u tools/log_simulator.py  # demo speed (seconds)
-python3 -u tools/log_simulator.py --slow  # realistic minute-scale
+python3 -u tools/log_simulator.py        # demo speed (seconds)
+python3 -u tools/log_simulator.py --slow # realistic minute-scale
 ```
 
 Odoo backoffice (Tingostim → Machines / Rental Requests / Factories) is at `http://localhost:8069`.
+
+For a friend taking over server / security work, see **`HANDOFF.md`**. For a manual end-to-end test pass, see **`TESTING.md`**.
 
 ---
 

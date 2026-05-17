@@ -80,4 +80,4 @@ export async function postTingostim(path, body) {
   return data
 }
 
-export const DEFAULT_DB = 'E-fatura'
+export const DEFAULT_DB = 'MNtory'

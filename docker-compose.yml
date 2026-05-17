@@ -1,0 +1,42 @@
+services:
+  db:
+    image: postgres:15
+    container_name: tingostim-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-odoo}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-odoo}
+      POSTGRES_DB: postgres
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-odoo}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  odoo:
+    image: odoo:18
+    container_name: tingostim-odoo
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8069:8069"
+    environment:
+      HOST: db
+      USER: ${POSTGRES_USER:-odoo}
+      PASSWORD: ${POSTGRES_PASSWORD:-odoo}
+    # --db-filter pins HTTP routing to one database. Required when more than
+    # one Odoo database exists (Odoo can't auto-pick a DB for public/anonymous
+    # routes like the telemetry endpoint). Override TINGOSTIM_DB if you renamed
+    # the database; the regex must match exactly one DB name.
+    command: ["odoo", "--db-filter=^${TINGOSTIM_DB:-MNtory}$$"]
+    volumes:
+      - odoo-data:/var/lib/odoo
+      - ./odoo-addon:/mnt/extra-addons
+
+volumes:
+  db-data:
+  odoo-data:

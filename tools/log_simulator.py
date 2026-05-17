@@ -189,7 +189,7 @@ def main() -> None:
                         help='JSON file with [{id, token, name?, machine_type?}, ...] instead of DB bootstrap')
     parser.add_argument('--db-container', default='db', help='Postgres container name (default: db)')
     parser.add_argument('--db-user', default='odoo')
-    parser.add_argument('--db-name', default='E-fatura')
+    parser.add_argument('--db-name', default='MNtory')
     parser.add_argument('--tick', type=float, default=1.0,
                         help='Seconds between scheduler ticks (default: %(default)s)')
     parser.add_argument('--slow', action='store_true',
