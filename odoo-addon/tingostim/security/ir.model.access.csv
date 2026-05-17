@@ -5,3 +5,5 @@ access_machine_log_factory_user,tingostim.machine_log factory user read,model_ti
 access_machine_log_admin,tingostim.machine_log admin,model_tingostim_machine_log,group_tingostim_platform_admin,1,1,1,1
 access_rental_request_factory_user,tingostim.rental_request factory user,model_tingostim_rental_request,group_tingostim_factory_user,1,1,1,0
 access_rental_request_admin,tingostim.rental_request admin,model_tingostim_rental_request,group_tingostim_platform_admin,1,1,1,1
+access_trending_factory_user,tingostim.trending factory user read,model_tingostim_trending,group_tingostim_factory_user,1,0,0,0
+access_trending_admin,tingostim.trending admin,model_tingostim_trending,group_tingostim_platform_admin,1,1,1,1

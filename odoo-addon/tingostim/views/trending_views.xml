@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_trending_list" model="ir.ui.view">
+        <field name="name">tingostim.trending.list</field>
+        <field name="model">tingostim.trending</field>
+        <field name="arch" type="xml">
+            <list decoration-success="demand_score >= 80" decoration-warning="demand_score >= 60 and demand_score &lt; 80" decoration-muted="demand_score &lt; 60">
+                <field name="category"/>
+                <field name="demand_score"/>
+                <field name="change_pct"/>
+                <field name="total_requests"/>
+                <field name="top_product"/>
+                <field name="factory_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_trending_form" model="ir.ui.view">
+        <field name="name">tingostim.trending.form</field>
+        <field name="model">tingostim.trending</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="category" placeholder="Category name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="demand_score"/>
+                            <field name="change_pct"/>
+                            <field name="total_requests"/>
+                        </group>
+                        <group>
+                            <field name="top_product"/>
+                            <field name="factory_id" options="{'no_create': True}"/>
+                        </group>
+                    </group>
+                    <group string="Description">
+                        <field name="description" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_trending" model="ir.actions.act_window">
+        <field name="name">Trending Categories</field>
+        <field name="res_model">tingostim.trending</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

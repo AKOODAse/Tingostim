@@ -7,7 +7,7 @@ const views = [
   { id: 'compare',     label: 'Compare'     },
 ]
 
-export default function Header({ view, setView }) {
+export default function Header({ view, setView, session, onLogout }) {
   return (
     <header style={{
       background: '#000000',
@@ -123,6 +123,56 @@ export default function Header({ view, setView }) {
           One Big Factory
         </span>
       </div>
+
+      {session && (
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 12,
+          paddingLeft: 20,
+          paddingRight: 4,
+          borderLeft: '2px solid #2D2A30',
+          marginLeft: 16,
+        }}>
+          <span style={{
+            fontFamily: 'Space Mono, monospace',
+            fontSize: 11,
+            color: '#8A8688',
+            letterSpacing: '0.08em',
+            textTransform: 'uppercase',
+          }}>
+            {session.username || session.name || `uid:${session.uid}`}
+          </span>
+          <button
+            onClick={onLogout}
+            style={{
+              padding: '8px 14px',
+              background: 'transparent',
+              color: '#F4F2F0',
+              border: '1px solid #2D2A30',
+              fontFamily: 'Space Mono, monospace',
+              fontSize: 10,
+              fontWeight: 700,
+              letterSpacing: '0.12em',
+              textTransform: 'uppercase',
+              cursor: 'pointer',
+              transition: 'background 0.1s, color 0.1s, border-color 0.1s',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = '#E83828'
+              e.currentTarget.style.color = '#0A0A0C'
+              e.currentTarget.style.borderColor = '#E83828'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'transparent'
+              e.currentTarget.style.color = '#F4F2F0'
+              e.currentTarget.style.borderColor = '#2D2A30'
+            }}
+          >
+            Sign Out
+          </button>
+        </div>
+      )}
     </header>
   )
 }

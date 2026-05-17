@@ -9,16 +9,22 @@
             <xpath expr="//notebook" position="inside">
                 <page string="Factory" name="tingostim_factory" invisible="not is_factory">
                     <group>
-                        <group>
+                        <group string="Identity">
                             <field name="is_factory"/>
                             <field name="factory_location"/>
                             <field name="founded_year"/>
                             <field name="employee_count"/>
-                        </group>
-                        <group>
                             <field name="specialty"/>
                             <field name="factory_color" placeholder="#E83828"/>
                             <field name="machine_count"/>
+                        </group>
+                        <group string="Performance">
+                            <field name="jobs_completed"/>
+                            <field name="revenue_total"/>
+                            <field name="kpi_currency_id" invisible="1"/>
+                            <field name="uptime_pct"/>
+                            <field name="rating"/>
+                            <field name="streak_days"/>
                         </group>
                     </group>
                     <group string="Bio">

@@ -29,6 +29,13 @@
         sequence="30"/>
 
     <menuitem
+        id="menu_trending"
+        name="Trending"
+        parent="menu_tingostim_root"
+        action="action_trending"
+        sequence="35"/>
+
+    <menuitem
         id="menu_machine_logs"
         name="Telemetry Logs"
         parent="menu_tingostim_root"

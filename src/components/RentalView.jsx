@@ -1,84 +1,13 @@
 import { useState } from 'react'
+import { postTingostim } from '../api.js'
 
 export default function RentalView({ machines }) {
   const [submitted, setSubmitted] = useState(null)
-  const [submittedCompany, setSubmittedCompany] = useState('')
 
   const idle = machines.filter(m => m.status === 'idle')
 
-  const handleSubmit = (machine, company) => {
-    setSubmitted(machine)
-    setSubmittedCompany(company)
-  }
-
   if (submitted) {
-    return (
-      <div style={{ maxWidth: 560, margin: '60px auto', textAlign: 'center' }}>
-        <div style={{
-          background: '#18181B',
-          border: '3px solid #4FB39F',
-          padding: 40,
-          boxShadow: '8px 8px 0 #0A0A0C',
-          position: 'relative',
-        }}>
-          <div style={{
-            position: 'absolute', top: -2, left: -2, right: -2, height: 6,
-            background: '#4FB39F',
-          }} />
-          <div style={{
-            fontSize: 48, marginBottom: 16, color: '#4FB39F',
-            fontFamily: 'Space Mono, monospace', fontWeight: 700,
-          }}>
-            ✓
-          </div>
-          <div style={{
-            fontSize: 18, fontWeight: 700, color: '#4FB39F', marginBottom: 16,
-            fontFamily: 'Space Mono, monospace',
-            textTransform: 'uppercase', letterSpacing: '0.08em',
-          }}>
-            ▣ Rental Request Submitted
-          </div>
-          <div style={{
-            background: '#25252A', border: '2px solid #2D2A30',
-            padding: 16, marginBottom: 20, textAlign: 'left',
-            fontFamily: 'Space Mono, monospace', fontSize: 12,
-          }}>
-            <div style={{ color: '#8A8688', marginBottom: 6 }}>
-              MACHINE: <span style={{ color: '#F4F2F0', fontWeight: 700 }}>{submitted.name}</span>
-            </div>
-            <div style={{ color: '#8A8688', marginBottom: 6 }}>
-              FACTORY: <span style={{ color: '#F4F2F0', fontWeight: 700 }}>{submitted.factory}</span>
-            </div>
-            <div style={{ color: '#8A8688' }}>
-              REQUESTED BY: <span style={{ color: '#F4F2F0', fontWeight: 700 }}>{submittedCompany}</span>
-            </div>
-          </div>
-          <div style={{
-            background: '#0A0A0C', border: '1px dashed #2D2A30',
-            padding: '12px 16px',
-            fontSize: 11, color: '#8A8688', fontFamily: 'Space Mono, monospace',
-            marginBottom: 24, textAlign: 'left',
-            textTransform: 'uppercase', letterSpacing: '0.04em', lineHeight: 1.6,
-          }}>
-            ▸ In production: this request would create a booking record in MNtory and notify the factory operator.
-          </div>
-          <button
-            onClick={() => { setSubmitted(null); setSubmittedCompany('') }}
-            style={{
-              padding: '12px 32px', background: '#E83828',
-              border: 'none', color: '#18181B',
-              fontSize: 12, fontWeight: 700, cursor: 'pointer',
-              fontFamily: 'Space Mono, monospace',
-              textTransform: 'uppercase', letterSpacing: '0.1em',
-            }}
-            onMouseEnter={e => { e.currentTarget.style.background = '#E8A33B' }}
-            onMouseLeave={e => { e.currentTarget.style.background = '#E83828' }}
-          >
-            ◀ Back to Listings
-          </button>
-        </div>
-      </div>
-    )
+    return <SuccessScreen request={submitted} onBack={() => setSubmitted(null)} />
   }
 
   return (
@@ -106,7 +35,7 @@ export default function RentalView({ machines }) {
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
           {idle.map(m => (
-            <RentalCard key={m.id} machine={m} onSubmit={handleSubmit} />
+            <RentalCard key={m.id} machine={m} onSubmitted={setSubmitted} />
           ))}
         </div>
       )}
@@ -114,16 +43,111 @@ export default function RentalView({ machines }) {
   )
 }
 
-// Per-machine rental card with isolated form state — fixes shared-state bug
-function RentalCard({ machine: m, onSubmit }) {
-  const [form, setForm] = useState({ company: '', email: '', date: '', notes: '' })
+function SuccessScreen({ request, onBack }) {
+  return (
+    <div style={{ maxWidth: 560, margin: '60px auto', textAlign: 'center' }}>
+      <div style={{
+        background: '#18181B',
+        border: '3px solid #4FB39F',
+        padding: 40,
+        boxShadow: '8px 8px 0 #0A0A0C',
+        position: 'relative',
+      }}>
+        <div style={{
+          position: 'absolute', top: -2, left: -2, right: -2, height: 6,
+          background: '#4FB39F',
+        }} />
+        <div style={{
+          fontSize: 48, marginBottom: 16, color: '#4FB39F',
+          fontFamily: 'Space Mono, monospace', fontWeight: 700,
+        }}>
+          ✓
+        </div>
+        <div style={{
+          fontSize: 18, fontWeight: 700, color: '#4FB39F', marginBottom: 16,
+          fontFamily: 'Space Mono, monospace',
+          textTransform: 'uppercase', letterSpacing: '0.08em',
+        }}>
+          ▣ Rental Request #{request.id} Submitted
+        </div>
+        <div style={{
+          background: '#25252A', border: '2px solid #2D2A30',
+          padding: 16, marginBottom: 20, textAlign: 'left',
+          fontFamily: 'Space Mono, monospace', fontSize: 12,
+        }}>
+          <Row label="MACHINE" value={request.machine_name} />
+          <Row label="PROVIDER" value={request.provider_factory} />
+          <Row label="REQUESTER" value={request.requester_factory} />
+          <Row label="DATE" value={request.requested_date} />
+          <Row label="DURATION" value={`${request.duration_hours} h`} />
+          <Row label="EST. COST" value={`€${(request.estimated_cost || 0).toFixed(2)}`} last />
+        </div>
+        <div style={{
+          background: '#0A0A0C', border: '1px dashed #2D2A30',
+          padding: '12px 16px',
+          fontSize: 11, color: '#8A8688', fontFamily: 'Space Mono, monospace',
+          marginBottom: 24, textAlign: 'left',
+          textTransform: 'uppercase', letterSpacing: '0.04em', lineHeight: 1.6,
+        }}>
+          ▸ Status: <span style={{ color: '#E8A33B', fontWeight: 700 }}>{request.state}</span> · The provider factory will see this request in their Odoo inbox.
+        </div>
+        <button
+          onClick={onBack}
+          style={{
+            padding: '12px 32px', background: '#E83828',
+            border: 'none', color: '#18181B',
+            fontSize: 12, fontWeight: 700, cursor: 'pointer',
+            fontFamily: 'Space Mono, monospace',
+            textTransform: 'uppercase', letterSpacing: '0.1em',
+          }}
+          onMouseEnter={e => { e.currentTarget.style.background = '#E8A33B' }}
+          onMouseLeave={e => { e.currentTarget.style.background = '#E83828' }}
+        >
+          ◀ Back to Listings
+        </button>
+      </div>
+    </div>
+  )
+}
 
-  const submit = () => {
-    if (!form.company || !form.email || !form.date) {
-      alert('Please fill in company, email, and date.')
+function Row({ label, value, last }) {
+  return (
+    <div style={{ color: '#8A8688', marginBottom: last ? 0 : 6 }}>
+      {label}: <span style={{ color: '#F4F2F0', fontWeight: 700 }}>{value || '—'}</span>
+    </div>
+  )
+}
+
+function RentalCard({ machine: m, onSubmitted }) {
+  const [form, setForm] = useState({ date: '', duration: '1', notes: '' })
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState('')
+
+  async function submit() {
+    setError('')
+    if (!form.date) {
+      setError('Date is required')
       return
     }
-    onSubmit(m, form.company)
+    const duration = parseFloat(form.duration)
+    if (!(duration > 0)) {
+      setError('Duration must be greater than 0')
+      return
+    }
+    setBusy(true)
+    try {
+      const created = await postTingostim('/rental_requests', {
+        machine_id: m.id,
+        requested_date: form.date,
+        duration_hours: duration,
+        notes: form.notes,
+      })
+      onSubmitted(created)
+    } catch (err) {
+      setError(err.message || 'submission failed')
+    } finally {
+      setBusy(false)
+    }
   }
 
   const inputStyle = {
@@ -133,6 +157,8 @@ function RentalCard({ machine: m, onSubmit }) {
     fontFamily: 'Space Mono, monospace',
   }
 
+  const totalCost = (parseFloat(form.duration) || 0) * (m.hourly_rate || 0)
+
   return (
     <div style={{
       background: '#18181B',
@@ -141,7 +167,6 @@ function RentalCard({ machine: m, onSubmit }) {
       padding: 24, display: 'grid',
       gridTemplateColumns: '1fr auto', gap: 24, alignItems: 'start',
     }}>
-      {/* Left: info */}
       <div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12, flexWrap: 'wrap' }}>
           <span style={{
@@ -178,13 +203,12 @@ function RentalCard({ machine: m, onSubmit }) {
           ▸ {m.specs}
         </div>
         <div style={{ fontSize: 11, color: '#8A8688', fontFamily: 'Space Mono, monospace', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-          Available from <span style={{ color: '#F4F2F0', fontWeight: 700 }}>{m.available_from}</span>
+          Available from <span style={{ color: '#F4F2F0', fontWeight: 700 }}>{m.available_from || '—'}</span>
           <span style={{ margin: '0 14px', color: '#2D2A30' }}>│</span>
-          Capacity available: <span style={{ color: '#4FB39F', fontWeight: 700 }}>{100 - m.capacity}%</span>
+          Capacity used: <span style={{ color: '#4FB39F', fontWeight: 700 }}>{m.capacity}%</span>
         </div>
       </div>
 
-      {/* Right: booking form */}
       <div style={{
         background: '#0A0A0C', border: '2px solid #2D2A30',
         padding: '18px 20px', minWidth: 280,
@@ -203,43 +227,89 @@ function RentalCard({ machine: m, onSubmit }) {
             €{m.hourly_rate}/HR
           </span>
         </div>
-        {[
-          ['company', 'COMPANY NAME', 'text'],
-          ['email', 'EMAIL', 'email'],
-          ['date', 'REQUESTED DATE', 'date'],
-        ].map(([field, placeholder, type]) => (
+
+        <label style={labelStyle}>
+          REQUESTED DATE
           <input
-            key={field}
-            type={type}
-            placeholder={placeholder}
-            value={form[field]}
-            onChange={e => setForm(f => ({ ...f, [field]: e.target.value }))}
+            type="date"
+            value={form.date}
+            onChange={e => setForm(f => ({ ...f, date: e.target.value }))}
             style={inputStyle}
+            disabled={busy}
           />
-        ))}
-        <textarea
-          placeholder="NOTES (OPTIONAL)"
-          value={form.notes}
-          onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
-          rows={2}
-          style={{ ...inputStyle, marginBottom: 14, resize: 'vertical' }}
-        />
+        </label>
+        <label style={labelStyle}>
+          DURATION (HOURS)
+          <input
+            type="number"
+            min="0.5"
+            step="0.5"
+            value={form.duration}
+            onChange={e => setForm(f => ({ ...f, duration: e.target.value }))}
+            style={inputStyle}
+            disabled={busy}
+          />
+        </label>
+        <label style={labelStyle}>
+          NOTES (OPTIONAL)
+          <textarea
+            value={form.notes}
+            onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
+            rows={2}
+            style={{ ...inputStyle, marginBottom: 8, resize: 'vertical' }}
+            disabled={busy}
+          />
+        </label>
+
+        <div style={{
+          display: 'flex', justifyContent: 'space-between',
+          padding: '8px 0', marginBottom: 12,
+          fontSize: 11, fontFamily: 'Space Mono, monospace',
+          color: '#8A8688', textTransform: 'uppercase', letterSpacing: '0.08em',
+        }}>
+          <span>Estimated cost</span>
+          <span style={{ color: '#4FB39F', fontWeight: 700 }}>€{totalCost.toFixed(2)}</span>
+        </div>
+
+        {error && (
+          <div style={{
+            marginBottom: 12, padding: '8px 10px',
+            border: '1px solid #E83828', color: '#E83828',
+            fontSize: 10, fontFamily: 'Space Mono, monospace',
+            letterSpacing: '0.06em', textTransform: 'uppercase', lineHeight: 1.4,
+          }}>
+            {error}
+          </div>
+        )}
+
         <button
           onClick={submit}
+          disabled={busy}
           style={{
             width: '100%', padding: '12px 0',
-            background: '#E83828', border: 'none',
-            color: '#18181B', fontSize: 12, fontWeight: 700, cursor: 'pointer',
+            background: busy ? '#2D2A30' : '#E83828', border: 'none',
+            color: busy ? '#8A8688' : '#18181B',
+            fontSize: 12, fontWeight: 700, cursor: busy ? 'wait' : 'pointer',
             fontFamily: 'Space Mono, monospace',
             textTransform: 'uppercase', letterSpacing: '0.1em',
             transition: 'background 0.1s',
           }}
-          onMouseEnter={e => { e.currentTarget.style.background = '#E8A33B' }}
-          onMouseLeave={e => { e.currentTarget.style.background = '#E83828' }}
+          onMouseEnter={e => { if (!busy) e.currentTarget.style.background = '#E8A33B' }}
+          onMouseLeave={e => { if (!busy) e.currentTarget.style.background = '#E83828' }}
         >
-          ▶ Request This Machine
+          {busy ? '◯ Submitting…' : '▶ Request This Machine'}
         </button>
       </div>
     </div>
   )
+}
+
+const labelStyle = {
+  display: 'block',
+  fontSize: 10,
+  letterSpacing: '0.1em',
+  textTransform: 'uppercase',
+  color: '#8A8688',
+  fontFamily: 'Space Mono, monospace',
+  marginBottom: 4,
 }

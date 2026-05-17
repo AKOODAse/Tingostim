@@ -7,10 +7,14 @@ MACHINE_TYPES = [
     ('cnc_milling', 'CNC Milling'),
     ('cnc_turning', 'CNC Turning'),
     ('laser_cutting', 'Laser Cutting'),
+    ('waterjet_cutting', 'Waterjet Cutting'),
     ('injection_molding', 'Injection Molding'),
     ('printing_3d', '3D Printing'),
     ('sheet_metal', 'Sheet Metal'),
     ('welding', 'Welding'),
+    ('pressing', 'Pressing'),
+    ('edm', 'EDM'),
+    ('surface_finishing', 'Surface Finishing'),
     ('other', 'Other'),
 ]
 

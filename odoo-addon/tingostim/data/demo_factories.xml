@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <!-- ==================== FACTORIES (res.partner) ==================== -->
+
+        <record id="factory_a" model="res.partner">
+            <field name="name">Factory A</field>
+            <field name="is_company" eval="True"/>
+            <field name="company_type">company</field>
+            <field name="is_factory" eval="True"/>
+            <field name="factory_location">Ostim, Ankara, TR</field>
+            <field name="founded_year">2018</field>
+            <field name="employee_count">45</field>
+            <field name="factory_bio">Specializing in precision CNC machining and advanced prototyping, Factory A has been a cornerstone of Ostim's manufacturing ecosystem since 2018.</field>
+            <field name="factory_color">#E83828</field>
+            <field name="specialty">CNC &amp; Precision Machining</field>
+            <field name="jobs_completed">342</field>
+            <field name="revenue_total">48500</field>
+            <field name="uptime_pct">96.5</field>
+            <field name="rating">4.8</field>
+            <field name="streak_days">14</field>
+        </record>
+
+        <record id="factory_b" model="res.partner">
+            <field name="name">Factory B</field>
+            <field name="is_company" eval="True"/>
+            <field name="company_type">company</field>
+            <field name="is_factory" eval="True"/>
+            <field name="factory_location">Ostim, Ankara, TR</field>
+            <field name="founded_year">2020</field>
+            <field name="employee_count">32</field>
+            <field name="factory_bio">A leader in cutting-edge waterjet and surface finishing technologies, Factory B serves automotive, construction, and furniture industries across Turkey.</field>
+            <field name="factory_color">#4FB39F</field>
+            <field name="specialty">Cutting &amp; Surface Treatment</field>
+            <field name="jobs_completed">289</field>
+            <field name="revenue_total">41200</field>
+            <field name="uptime_pct">93.2</field>
+            <field name="rating">4.6</field>
+            <field name="streak_days">8</field>
+        </record>
+
+        <!-- ==================== FACTORY A MACHINES ==================== -->
+
+        <record id="machine_a1" model="tingostim.machine">
+            <field name="name">CNC Mill Alpha</field>
+            <field name="machine_type">cnc_milling</field>
+            <field name="factory_id" ref="factory_a"/>
+            <field name="hourly_rate">85</field>
+            <field name="available_from">2026-04-03</field>
+            <field name="specs">5-axis, 800x600mm table, ±0.01mm tolerance</field>
+            <field name="image_key">cnc</field>
+        </record>
+
+        <record id="machine_a2" model="tingostim.machine">
+            <field name="name">Laser Cutter L1</field>
+            <field name="machine_type">laser_cutting</field>
+            <field name="factory_id" ref="factory_a"/>
+            <field name="hourly_rate">60</field>
+            <field name="available_from">2026-04-08</field>
+            <field name="specs">CO2 1500W, 1200x900mm bed, metals &amp; plastics</field>
+            <field name="image_key">laser</field>
+        </record>
+
+        <record id="machine_a3" model="tingostim.machine">
+            <field name="name">Injection Molder IM-3</field>
+            <field name="machine_type">injection_molding</field>
+            <field name="factory_id" ref="factory_a"/>
+            <field name="hourly_rate">120</field>
+            <field name="available_from">2026-04-03</field>
+            <field name="specs">250T clamp force, 500g shot weight</field>
+            <field name="image_key">mold</field>
+        </record>
+
+        <record id="machine_a4" model="tingostim.machine">
+            <field name="name">Robotic Welder RW-1</field>
+            <field name="machine_type">welding</field>
+            <field name="factory_id" ref="factory_a"/>
+            <field name="hourly_rate">95</field>
+            <field name="available_from">2026-04-12</field>
+            <field name="specs">6-axis arm, MIG/TIG, 2m reach</field>
+            <field name="image_key">weld</field>
+        </record>
+
+        <record id="machine_a5" model="tingostim.machine">
+            <field name="name">3D Printer FDM-5</field>
+            <field name="machine_type">printing_3d</field>
+            <field name="factory_id" ref="factory_a"/>
+            <field name="hourly_rate">35</field>
+            <field name="available_from">2026-04-03</field>
+            <field name="specs">600x600x600mm, PLA/ABS/PETG/Nylon</field>
+            <field name="image_key">print</field>
+        </record>
+
+        <record id="machine_a6" model="tingostim.machine">
+            <field name="name">Hydraulic Press HP-2</field>
+            <field name="machine_type">pressing</field>
+            <field name="factory_id" ref="factory_a"/>
+            <field name="hourly_rate">70</field>
+            <field name="available_from">2026-04-15</field>
+            <field name="specs">200T force, 800x600mm bed</field>
+            <field name="image_key">press</field>
+        </record>
+
+        <!-- ==================== FACTORY B MACHINES ==================== -->
+
+        <record id="machine_b1" model="tingostim.machine">
+            <field name="name">CNC Lathe TL-7</field>
+            <field name="machine_type">cnc_turning</field>
+            <field name="factory_id" ref="factory_b"/>
+            <field name="hourly_rate">75</field>
+            <field name="available_from">2026-04-03</field>
+            <field name="specs">Ø400mm swing, 1000mm between centers</field>
+            <field name="image_key">cnc</field>
+        </record>
+
+        <record id="machine_b2" model="tingostim.machine">
+            <field name="name">Waterjet Cutter WJ-2</field>
+            <field name="machine_type">waterjet_cutting</field>
+            <field name="factory_id" ref="factory_b"/>
+            <field name="hourly_rate">110</field>
+            <field name="available_from">2026-04-04</field>
+            <field name="specs">4000x2000mm, 6000 bar, any material</field>
+            <field name="image_key">laser</field>
+        </record>
+
+        <record id="machine_b3" model="tingostim.machine">
+            <field name="name">Sheet Metal Bender SMB-4</field>
+            <field name="machine_type">sheet_metal</field>
+            <field name="factory_id" ref="factory_b"/>
+            <field name="hourly_rate">55</field>
+            <field name="available_from">2026-04-11</field>
+            <field name="specs">3m bed, 160T, up to 12mm steel</field>
+            <field name="image_key">press</field>
+        </record>
+
+        <record id="machine_b4" model="tingostim.machine">
+            <field name="name">SLA Resin Printer R2</field>
+            <field name="machine_type">printing_3d</field>
+            <field name="factory_id" ref="factory_b"/>
+            <field name="hourly_rate">50</field>
+            <field name="available_from">2026-04-03</field>
+            <field name="specs">300x300x400mm, 25 micron resolution</field>
+            <field name="image_key">print</field>
+        </record>
+
+        <record id="machine_b5" model="tingostim.machine">
+            <field name="name">EDM Machine EDM-1</field>
+            <field name="machine_type">edm</field>
+            <field name="factory_id" ref="factory_b"/>
+            <field name="hourly_rate">130</field>
+            <field name="available_from">2026-04-20</field>
+            <field name="specs">Wire &amp; sinker EDM, hardened steel capable</field>
+            <field name="image_key">cnc</field>
+        </record>
+
+        <record id="machine_b6" model="tingostim.machine">
+            <field name="name">Powder Coat Booth PC-1</field>
+            <field name="machine_type">surface_finishing</field>
+            <field name="factory_id" ref="factory_b"/>
+            <field name="hourly_rate">40</field>
+            <field name="available_from">2026-04-03</field>
+            <field name="specs">2x2x3m booth, full RAL color range</field>
+            <field name="image_key">weld</field>
+        </record>
+
+        <!-- ==================== INITIAL TELEMETRY LOGS ==================== -->
+        <!-- One log per machine seeds the computed status/capacity fields. -->
+
+        <record id="log_a1" model="tingostim.machine_log">
+            <field name="machine_id" ref="machine_a1"/>
+            <field name="status">idle</field>
+            <field name="capacity">75</field>
+        </record>
+        <record id="log_a2" model="tingostim.machine_log">
+            <field name="machine_id" ref="machine_a2"/>
+            <field name="status">busy</field>
+            <field name="capacity">100</field>
+        </record>
+        <record id="log_a3" model="tingostim.machine_log">
+            <field name="machine_id" ref="machine_a3"/>
+            <field name="status">idle</field>
+            <field name="capacity">40</field>
+        </record>
+        <record id="log_a4" model="tingostim.machine_log">
+            <field name="machine_id" ref="machine_a4"/>
+            <field name="status">maintenance</field>
+            <field name="capacity">0</field>
+        </record>
+        <record id="log_a5" model="tingostim.machine_log">
+            <field name="machine_id" ref="machine_a5"/>
+            <field name="status">idle</field>
+            <field name="capacity">60</field>
+        </record>
+        <record id="log_a6" model="tingostim.machine_log">
+            <field name="machine_id" ref="machine_a6"/>
+            <field name="status">busy</field>
+            <field name="capacity">90</field>
+        </record>
+        <record id="log_b1" model="tingostim.machine_log">
+            <field name="machine_id" ref="machine_b1"/>
+            <field name="status">idle</field>
+            <field name="capacity">55</field>
+        </record>
+        <record id="log_b2" model="tingostim.machine_log">
+            <field name="machine_id" ref="machine_b2"/>
+            <field name="status">idle</field>
+            <field name="capacity">30</field>
+        </record>
+        <record id="log_b3" model="tingostim.machine_log">
+            <field name="machine_id" ref="machine_b3"/>
+            <field name="status">busy</field>
+            <field name="capacity">100</field>
+        </record>
+        <record id="log_b4" model="tingostim.machine_log">
+            <field name="machine_id" ref="machine_b4"/>
+            <field name="status">idle</field>
+            <field name="capacity">45</field>
+        </record>
+        <record id="log_b5" model="tingostim.machine_log">
+            <field name="machine_id" ref="machine_b5"/>
+            <field name="status">maintenance</field>
+            <field name="capacity">0</field>
+        </record>
+        <record id="log_b6" model="tingostim.machine_log">
+            <field name="machine_id" ref="machine_b6"/>
+            <field name="status">idle</field>
+            <field name="capacity">70</field>
+        </record>
+
+        <!-- ==================== TRENDING SNAPSHOTS ==================== -->
+
+        <record id="trending_t1" model="tingostim.trending">
+            <field name="category">CNC Milling</field>
+            <field name="demand_score">94</field>
+            <field name="change_pct">12</field>
+            <field name="total_requests">187</field>
+            <field name="top_product">Automotive gear housings</field>
+            <field name="description">High-precision CNC parts for automotive and aerospace sectors</field>
+            <field name="factory_id" ref="factory_a"/>
+        </record>
+        <record id="trending_t2" model="tingostim.trending">
+            <field name="category">3D Printing</field>
+            <field name="demand_score">88</field>
+            <field name="change_pct">24</field>
+            <field name="total_requests">156</field>
+            <field name="top_product">Rapid prototyping molds</field>
+            <field name="description">FDM and SLA printing for prototyping and small-batch production</field>
+            <field name="factory_id" ref="factory_a"/>
+        </record>
+        <record id="trending_t3" model="tingostim.trending">
+            <field name="category">Laser Cutting</field>
+            <field name="demand_score">82</field>
+            <field name="change_pct">8</field>
+            <field name="total_requests">134</field>
+            <field name="top_product">Sheet metal enclosures</field>
+            <field name="description">Precision cutting for electronics and industrial enclosures</field>
+            <field name="factory_id" ref="factory_a"/>
+        </record>
+        <record id="trending_t4" model="tingostim.trending">
+            <field name="category">Injection Molding</field>
+            <field name="demand_score">76</field>
+            <field name="change_pct">-3</field>
+            <field name="total_requests">112</field>
+            <field name="top_product">Plastic connector parts</field>
+            <field name="description">Mass production of plastic components for electronics</field>
+            <field name="factory_id" ref="factory_a"/>
+        </record>
+        <record id="trending_t5" model="tingostim.trending">
+            <field name="category">Welding</field>
+            <field name="demand_score">71</field>
+            <field name="change_pct">5</field>
+            <field name="total_requests">98</field>
+            <field name="top_product">Steel frame assemblies</field>
+            <field name="description">Robotic and manual welding for structural components</field>
+            <field name="factory_id" ref="factory_a"/>
+        </record>
+        <record id="trending_t6" model="tingostim.trending">
+            <field name="category">Waterjet Cutting</field>
+            <field name="demand_score">79</field>
+            <field name="change_pct">15</field>
+            <field name="total_requests">105</field>
+            <field name="top_product">Composite material panels</field>
+            <field name="description">Cold-cut solution for heat-sensitive materials</field>
+            <field name="factory_id" ref="factory_b"/>
+        </record>
+        <record id="trending_t7" model="tingostim.trending">
+            <field name="category">Sheet Metal</field>
+            <field name="demand_score">74</field>
+            <field name="change_pct">6</field>
+            <field name="total_requests">89</field>
+            <field name="top_product">HVAC ductwork</field>
+            <field name="description">Bending and forming for construction and HVAC industries</field>
+            <field name="factory_id" ref="factory_b"/>
+        </record>
+        <record id="trending_t8" model="tingostim.trending">
+            <field name="category">Surface Finishing</field>
+            <field name="demand_score">68</field>
+            <field name="change_pct">18</field>
+            <field name="total_requests">76</field>
+            <field name="top_product">Powder coated furniture frames</field>
+            <field name="description">Durable coating for metal furniture and fixtures</field>
+            <field name="factory_id" ref="factory_b"/>
+        </record>
+        <record id="trending_t9" model="tingostim.trending">
+            <field name="category">EDM</field>
+            <field name="demand_score">63</field>
+            <field name="change_pct">-2</field>
+            <field name="total_requests">54</field>
+            <field name="top_product">Hardened die inserts</field>
+            <field name="description">Precision machining of hardened tool steels</field>
+            <field name="factory_id" ref="factory_b"/>
+        </record>
+        <record id="trending_t10" model="tingostim.trending">
+            <field name="category">CNC Turning</field>
+            <field name="demand_score">85</field>
+            <field name="change_pct">10</field>
+            <field name="total_requests">143</field>
+            <field name="top_product">Precision shaft components</field>
+            <field name="description">High-volume turning for automotive drivetrain parts</field>
+            <field name="factory_id" ref="factory_b"/>
+        </record>
+
+    </data>
+</odoo>

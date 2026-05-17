@@ -6,74 +6,116 @@ import RentalView from './components/RentalView.jsx'
 import TrendingView from './components/TrendingView.jsx'
 import LeaderboardView from './components/LeaderboardView.jsx'
 import MachineComparison from './components/MachineComparison.jsx'
+import LoginScreen from './components/LoginScreen.jsx'
+import { fetchTingostim, getSession, logout } from './api.js'
 
-// ── CONFIG: change these to your real server URLs ──────────────────────────
-const FACTORY_SOURCES = [
-  { id: 'a', name: 'Factory A', url: 'http://localhost:3001', color: '#E83828' },
-  { id: 'b', name: 'Factory B', url: 'http://localhost:3002', color: '#4FB39F' },
-]
-const REFRESH_INTERVAL = 10000 // 10 seconds
-// ───────────────────────────────────────────────────────────────────────────
+const REFRESH_INTERVAL = 10000
+
+function uniqueFactories(machines) {
+  const seen = new Map()
+  for (const m of machines) {
+    const f = m._factory
+    if (f && !seen.has(f.id)) seen.set(f.id, f)
+  }
+  return Array.from(seen.values())
+}
+
+function isAuthed(session) {
+  return !!(session && session.uid)
+}
 
 export default function App() {
-  const [view, setView]         = useState('dashboard')
+  const [session, setSession] = useState(null)
+  const [authChecked, setAuthChecked] = useState(false)
+
+  const [view, setView] = useState('dashboard')
   const [machines, setMachines] = useState([])
   const [trending, setTrending] = useState([])
   const [leaderboard, setLeaderboard] = useState([])
+  const [factories, setFactories] = useState([])
+
+  useEffect(() => {
+    getSession().then((s) => {
+      setSession(s)
+      setAuthChecked(true)
+    })
+  }, [])
 
   const fetchAll = useCallback(async () => {
-    const results   = []
-    const trendingResults = []
-    const leaderboardResults = []
+    const [machinesRes, trendingRes, leaderboardRes] = await Promise.allSettled([
+      fetchTingostim('/machines'),
+      fetchTingostim('/trending'),
+      fetchTingostim('/leaderboard'),
+    ])
 
-    await Promise.allSettled(
-      FACTORY_SOURCES.map(async (factory) => {
-        try {
-          const [machinesRes, trendingRes, leaderboardRes] = await Promise.allSettled([
-            fetch(`${factory.url}/machines`),
-            fetch(`${factory.url}/trending`),
-            fetch(`${factory.url}/leaderboard`),
-          ])
+    let lostAuth = false
 
-          if (machinesRes.status === 'fulfilled' && machinesRes.value.ok) {
-            const data = await machinesRes.value.json()
-            const list = Array.isArray(data) ? data : (data.machines || [])
-            list.forEach(m => results.push({ ...m, _factory: factory }))
-          }
+    if (machinesRes.status === 'fulfilled') {
+      const list = machinesRes.value || []
+      setMachines(list)
+      setFactories(uniqueFactories(list))
+    } else {
+      if (machinesRes.reason?.code === 'AUTH') lostAuth = true
+      console.warn('[Tingostim] machines fetch failed:', machinesRes.reason?.message)
+    }
 
-          if (trendingRes.status === 'fulfilled' && trendingRes.value.ok) {
-            const data = await trendingRes.value.json()
-            const list = Array.isArray(data) ? data : []
-            trendingResults.push(...list)
-          }
+    if (trendingRes.status === 'fulfilled') {
+      setTrending(trendingRes.value || [])
+    } else if (trendingRes.reason?.code === 'AUTH') {
+      lostAuth = true
+    }
 
-          if (leaderboardRes.status === 'fulfilled' && leaderboardRes.value.ok) {
-            const data = await leaderboardRes.value.json()
-            const list = Array.isArray(data) ? data : []
-            leaderboardResults.push(...list)
-          }
-        } catch {
-          // swallow per-factory failures; other factories can still succeed
-        }
-      })
-    )
+    if (leaderboardRes.status === 'fulfilled') {
+      setLeaderboard(leaderboardRes.value || [])
+    } else if (leaderboardRes.reason?.code === 'AUTH') {
+      lostAuth = true
+    }
 
-    setMachines(results)
-    setTrending(trendingResults)
-    setLeaderboard(leaderboardResults)
+    if (lostAuth) setSession(null)
   }, [])
 
   useEffect(() => {
+    if (!isAuthed(session)) return
     fetchAll()
     const interval = setInterval(fetchAll, REFRESH_INTERVAL)
     return () => clearInterval(interval)
-  }, [fetchAll])
+  }, [session, fetchAll])
 
-  const factories = FACTORY_SOURCES
+  async function handleLogout() {
+    await logout()
+    setSession(null)
+    setMachines([])
+    setTrending([])
+    setLeaderboard([])
+    setFactories([])
+  }
+
+  if (!authChecked) {
+    return (
+      <div style={{
+        minHeight: '100vh',
+        background: '#0A0A0C',
+        color: '#8A8688',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontFamily: 'Space Mono, monospace',
+        fontSize: 11,
+        letterSpacing: '0.18em',
+        textTransform: 'uppercase',
+      }}>
+        Loading…
+      </div>
+    )
+  }
+
+  if (!isAuthed(session)) {
+    return <LoginScreen onAuthenticated={setSession} />
+  }
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      <Header view={view} setView={setView} />
+      <Header view={view} setView={setView} session={session} onLogout={handleLogout} />
       <main style={{ flex: 1, padding: '28px 24px', maxWidth: 1440, margin: '0 auto', width: '100%' }}>
         {view === 'dashboard'  && <Dashboard machines={machines} factories={factories} setView={setView} />}
         {view === 'capacity'   && <CapacityView machines={machines} factories={factories} />}

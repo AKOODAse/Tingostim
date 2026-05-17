@@ -20,6 +20,20 @@ class ResPartner(models.Model):
     )
     specialty = fields.Char(string='Specialty')
 
+    jobs_completed = fields.Integer(string='Jobs Completed')
+    revenue_total = fields.Monetary(
+        string='Revenue (EUR)',
+        currency_field='kpi_currency_id',
+    )
+    kpi_currency_id = fields.Many2one(
+        comodel_name='res.currency',
+        default=lambda self: self.env.ref('base.EUR', raise_if_not_found=False)
+        or self.env.company.currency_id,
+    )
+    uptime_pct = fields.Float(string='Uptime (%)')
+    rating = fields.Float(string='Rating', digits=(2, 1))
+    streak_days = fields.Integer(string='Streak (days)')
+
     machine_ids = fields.One2many(
         comodel_name='tingostim.machine',
         inverse_name='factory_id',

@@ -1,118 +1,148 @@
+# Tingostim
 
-# FactoryLink — B2B Industrial Capacity Platform
-## Graduation Project Demo
+**B2B platform for industrial capacity sharing in Ostim, Ankara.** Closed system connecting contracted factories so they can rent each other's idle machines and share manufacturing capacity. Every factory is both renter and provider.
+
+---
+
+## Architecture
+
+```
+Browser  ──►  React + Vite (port 5173)
+                     │
+                     │  /api/*  (Vite dev proxy)
+                     ▼
+              Odoo 18 (port 8069)  ──►  Postgres 15
+                     │
+                     ├─ custom module: tingostim
+                     │    ├─ models: machine, machine_log, rental_request, trending
+                     │    └─ controllers: /tingostim/api/v1/*
+                     │
+                     └─ admin-provisioned users (closed system)
+
+Factory floor ─POST /machines/<id>/log─►  Odoo  (real agent — future work)
+   (simulator stands in for the agent today)
+```
 
 ---
 
 ## Project structure
 
 ```
-factory-platform/
-├── src/                        # React frontend (Vite)
-│   ├── App.jsx                 # Main app, data fetching, routing
+.
+├── src/                        # React frontend
+│   ├── App.jsx                 # auth state + fetch loop
+│   ├── api.js                  # session + REST helpers
 │   ├── components/
-│   │   ├── Header.jsx          # Nav bar
-│   │   ├── StatusBar.jsx       # Live server connection indicators
-│   │   ├── Dashboard.jsx       # Machine dashboard + filters
-│   │   ├── MachineCard.jsx     # Individual machine card + modal
-│   │   ├── CapacityView.jsx    # Capacity sharing overview
-│   │   └── RentalView.jsx      # Idle machine rental marketplace
-├── server-factory-a/
-│   ├── machines.json           # Factory A machine data
-│   └── setup.sh                # DevOps setup script
-└── server-factory-b/
-    ├── machines.json           # Factory B machine data
-    └── setup.sh                # DevOps setup script
+│   │   ├── LoginScreen.jsx
+│   │   ├── Header.jsx          # nav + sign-out
+│   │   ├── Dashboard.jsx
+│   │   ├── MachineCard.jsx
+│   │   ├── CapacityView.jsx
+│   │   ├── RentalView.jsx      # posts to /api/tingostim/api/v1/rental_requests
+│   │   ├── TrendingView.jsx
+│   │   ├── LeaderboardView.jsx
+│   │   └── MachineComparison.jsx
+│   └── main.jsx
+├── odoo-addon/tingostim/       # custom Odoo 18 module
+│   ├── __manifest__.py
+│   ├── models/                 # res.partner ext + machine, machine_log, rental_request, trending
+│   ├── security/               # 2 groups, ACLs, record rules
+│   ├── views/                  # tree, form, kanban, menus
+│   ├── controllers/api.py      # REST endpoints under /tingostim/api/v1/
+│   └── data/demo_factories.xml # seed: 2 factories + 12 machines + initial logs
+├── tools/
+│   └── log_simulator.py        # telemetry agent stand-in for the demo
+└── vite.config.js              # /api proxy → :8069
 ```
 
 ---
 
-## Quick start (local demo — no servers needed)
+## Quick start
+
+**Prereqs**: Docker, Node 18+. Containers `odoo` (image `odoo:18`) and `db` (image `postgres:15`, linked as `db`) already running. The custom module lives in the Odoo container's `/mnt/extra-addons` volume.
 
 ```bash
-# 1. Install dependencies
+# 1. Sync the module into the Odoo container and install/upgrade
+docker exec -u root odoo rm -rf /mnt/extra-addons/tingostim
+docker cp odoo-addon/tingostim odoo:/mnt/extra-addons/tingostim
+docker exec odoo /entrypoint.sh odoo -d E-fatura -u tingostim --stop-after-init --no-http
+docker restart odoo                # pick up the new controllers
+
+# 2. Run the React app
 npm install
+npm run dev                        # http://localhost:5173
 
-# 2. Start both fake servers (two terminals)
-npx json-server --watch server-factory-a/machines.json --port 3001
-npx json-server --watch server-factory-b/machines.json --port 3002
+# 3. Log in (LoginScreen — closed system, no signup)
+#    factory.a / tingostim2026     → Factory A user
+#    factory.b / tingostim2026     → Factory B user
 
-# 3. Start React app (third terminal)
-npm run dev
-
-# Open http://localhost:5173
+# 4. Watch live status flips during the demo
+python3 -u tools/log_simulator.py  # demo speed (seconds)
+python3 -u tools/log_simulator.py --slow  # realistic minute-scale
 ```
 
----
-
-## Real server setup (DevOps)
-
-### On each factory machine (Ubuntu/Debian):
-```bash
-cd server-factory-a   # or server-factory-b
-chmod +x setup.sh
-./setup.sh
-```
-
-The script installs and configures:
-- **json-server** — serves machines.json as a REST API
-- **pm2** — keeps the server running, auto-restarts on reboot
-- **Nginx** — reverse proxy with CORS headers
-- **ufw** — firewall: blocks direct port access, allows only HTTPS
-- **certbot** — free SSL from Let's Encrypt
-
-### After setup, update App.jsx:
-```js
-// src/App.jsx — line 8
-const FACTORY_SOURCES = [
-  { id: 'a', name: 'Factory A', url: 'https://factory-a.yourdomain.com/machines', color: '#00e5a0' },
-  { id: 'b', name: 'Factory B', url: 'https://factory-b.yourdomain.com/machines', color: '#4d9fff' },
-]
-```
+Odoo backoffice (Tingostim → Machines / Rental Requests / Factories) is at `http://localhost:8069`.
 
 ---
 
-## Deploy the website
+## API surface
 
-```bash
-npm run build
-npx vercel   # or: npx netlify deploy --prod --dir=dist
-```
+All endpoints under `/tingostim/api/v1/` (proxied from React as `/api/tingostim/api/v1/`).
 
----
+| Method | Path | Auth | Purpose |
+|---|---|---|---|
+| GET  | `/machines`                | session  | All machines across all factories |
+| GET  | `/machines/<id>`           | session  | Single machine |
+| GET  | `/trending`                | session  | Category demand snapshots |
+| GET  | `/leaderboard`             | session  | Per-factory KPI rollup |
+| GET  | `/rental_requests`         | session  | All visible requests (`?mine=1` for the user's factory only) |
+| POST | `/rental_requests`         | session  | Submit a request (rejects own-factory) |
+| POST | `/machines/<id>/log`       | token    | Telemetry ingest — `X-Ingest-Token` header |
 
-## Demo script (for the presentation)
-
-1. Open the website — show the **Status Bar** at the top: Factory A online, Factory B online
-2. Go to **Machine Dashboard** — filter by factory, filter by "idle"
-3. Click a machine card — show the detail modal + rental request button
-4. Go to **Capacity Sharing** — show utilization bars per factory
-5. Go to **Idle Rentals** — submit a rental form to show the booking flow
-6. **The live proof**: SSH into factory-a server, open `machines.json`,
-   change one machine's status from `"idle"` to `"busy"`, save.
-   Wait 30 seconds → the website updates automatically.
+Auth: Odoo session via `POST /web/session/authenticate {db, login, password}`. Telemetry endpoint uses a per-machine token stored on `tingostim.machine.ingest_token` (admin-only readable).
 
 ---
 
-## Machine status values
+## Demo script
 
-| Status | Meaning |
-|--------|---------|
-| `idle` | Machine is free — available for rental |
-| `busy` | Machine is running a job — not available |
-| `maintenance` | Down for maintenance — unavailable |
+1. Show `docker ps` — Odoo + Postgres running.
+2. Open http://localhost:5173 → **LoginScreen** ("closed system / authorized access").
+3. Log in as `factory.a`. Header shows your username; dashboard loads machines from Odoo.
+4. **Dashboard** → filter by status, by factory.
+5. **Rentals** → pick a Factory B idle machine → fill date + duration → submit. Success card shows request ID, estimated cost.
+6. Try to rent a Factory A machine while logged in as factory.a → inline red error "cannot rent a machine from your own factory" (server-enforced).
+7. **Telemetry**: run `python3 -u tools/log_simulator.py` in a side terminal — say:
+   > "This is the API contract a factory's machine agent uses. The simulator sends the same payload a real CNC controller would. In production this is replaced per factory; the platform contract doesn't change."
+8. Watch badges flip in the React dashboard within 10s (poll interval). Each event line shows the API responded `HTTP 201`.
+9. Open Odoo at :8069 as admin → **Tingostim → Rental Requests** → see the request submitted in step 5.
 
 ---
 
-## Report sections this covers
+## Roles & permissions
 
-- System architecture (2+ factory servers → API Gateway → React frontend)
-- DevOps: server setup, process management (pm2), reverse proxy (Nginx)
-- Cybersecurity: firewall rules (ufw), SSL/TLS encryption, CORS policy
-- B2B platform: machine discovery, capacity visibility, rental workflow
-- Agile: 3-week sprint, iterative delivery, MVP scope
-- Future work: real Odoo ERP sync, authentication, booking database
+| Group | Scope |
+|---|---|
+| **Platform Admin** (`group_tingostim_platform_admin`) | Tingostim staff. Creates `res.partner` factories, provisions users, issues per-machine ingest tokens. Sees everything. |
+| **Factory User** (`group_tingostim_factory_user`) | Linked to one `res.partner` via `user.partner_id`. Reads all machines; edits **only their own factory's** machine metadata (status is automated, never UI). Creates rental requests on other factories' idle machines; sees requests their factory is involved in. |
 
-# Tingostim
-B2B Platform for Industrial Capacity Sharing and Idle Machine Management (Ostim Connected Factories)
+Closed system: no anonymous browse, no self-signup, admin provisions credentials.
 
+---
+
+## Stack
+
+- **Backend**: Odoo 18 (custom module `tingostim`), Postgres 15
+- **Frontend**: React 18, Vite 5
+- **Telemetry simulator**: stdlib Python (no deps)
+- **Containers**: Docker (`odoo`, `db` containers on host)
+
+---
+
+## Future work (real telemetry)
+
+The platform contract for `POST /machines/<id>/log` is built and proven by the simulator. To replace the simulator with a real factory-floor agent:
+
+- Python agent running on each factory's network, reading PLCs via OPC-UA / Modbus / vendor SDK
+- Each machine provisioned with its `ingest_token` from the Tingostim admin UI
+- Agent POSTs to the same endpoint; no platform-side changes needed
+- Reference: EquipmentShare's telemetry-driven status model
