@@ -153,9 +153,16 @@ def schedule_next_flip(machine: Machine, durations: dict, now: float) -> None:
     machine.next_flip_at = now + random.uniform(lo, hi)
 
 
-def step(machine: Machine, durations: dict) -> tuple[str, float]:
-    """Return the next (status, capacity) for the machine."""
+def step(machine: Machine, machines: list[Machine], min_idle: int) -> tuple[str, float]:
+    """Return the next (status, capacity) for the machine, enforcing the idle floor."""
     new_status = weighted_pick(TRANSITIONS.get(machine.status, [('idle', 1.0)]))
+
+    # Demo guard: refuse a flip that would leave fewer than `min_idle` machines idle.
+    if machine.status == 'idle' and new_status != 'idle':
+        idle_count = sum(1 for m in machines if m.status == 'idle')
+        if idle_count <= min_idle:
+            new_status = 'idle'
+
     cap_lo, cap_hi = CAPACITY[new_status]
     new_capacity = round(random.uniform(cap_lo, cap_hi), 1) if cap_hi > 0 else 0.0
     return new_status, new_capacity
@@ -187,6 +194,9 @@ def main() -> None:
                         help='Seconds between scheduler ticks (default: %(default)s)')
     parser.add_argument('--slow', action='store_true',
                         help='Use realistic minute-scale durations instead of demo-fast seconds')
+    parser.add_argument('--min-idle', type=int, default=5,
+                        help='Demo guard: never flip a machine out of idle if doing so would drop '
+                             'the idle count below this (default: %(default)s). Pass 0 to disable.')
     parser.add_argument('--request-timeout', type=float, default=5.0)
     parser.add_argument('--seed', type=int)
     args = parser.parse_args()
@@ -203,11 +213,14 @@ def main() -> None:
 
     durations = DURATION_REALISTIC if args.slow else DURATION_DEMO
 
+    min_idle = max(0, min(args.min_idle, len(machines)))
+
     print(f'{ANSI["bold"]}Tingostim telemetry simulator{ANSI["reset"]}')
     print(f'  base url : {args.base_url}')
     print(f'  source   : {source}')
     print(f'  mode     : {"realistic (minutes)" if args.slow else "demo (seconds)"}')
     print(f'  machines : {len(machines)}')
+    print(f'  min idle : {min_idle}{" (disabled)" if min_idle == 0 else ""}')
     print(f'  press Ctrl-C to stop\n')
 
     now = time.time()
@@ -227,7 +240,7 @@ def main() -> None:
         due = [m for m in machines if now >= m.next_flip_at]
         for m in due:
             old_status = m.status
-            new_status, new_capacity = step(m, durations)
+            new_status, new_capacity = step(m, machines, min_idle)
             ok, result = post_log(args.base_url, m, new_status, new_capacity, args.request_timeout)
             if ok:
                 m.status = new_status
