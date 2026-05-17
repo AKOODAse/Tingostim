@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_machine_list" model="ir.ui.view">
+        <field name="name">tingostim.machine.list</field>
+        <field name="model">tingostim.machine</field>
+        <field name="arch" type="xml">
+            <list decoration-success="status == 'idle'" decoration-danger="status == 'busy'" decoration-warning="status == 'maintenance'" decoration-muted="status == 'unknown'">
+                <field name="name"/>
+                <field name="machine_type"/>
+                <field name="factory_id"/>
+                <field name="status"/>
+                <field name="current_capacity" widget="progressbar"/>
+                <field name="hourly_rate"/>
+                <field name="available_from"/>
+                <field name="last_seen"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_machine_form" model="ir.ui.view">
+        <field name="name">tingostim.machine.form</field>
+        <field name="model">tingostim.machine</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_regenerate_token" type="object" string="Regenerate Ingest Token" groups="tingostim.group_tingostim_platform_admin" confirm="Old agents using the previous token will stop working. Continue?"/>
+                    <field name="status" widget="statusbar" readonly="1"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="e.g. CNC Mill Alpha"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="machine_type"/>
+                            <field name="factory_id" options="{'no_create': True}"/>
+                            <field name="image_key" placeholder="cnc, laser, mold, 3d, ..."/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="hourly_rate"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="available_from"/>
+                            <field name="current_capacity" widget="progressbar" readonly="1"/>
+                            <field name="last_seen" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Specifications">
+                        <field name="specs" nolabel="1"/>
+                    </group>
+                    <group string="Telemetry" groups="tingostim.group_tingostim_platform_admin">
+                        <field name="ingest_token" readonly="1"/>
+                    </group>
+                    <notebook>
+                        <page string="Logs" name="logs">
+                            <field name="log_ids" readonly="1">
+                                <list>
+                                    <field name="log_time"/>
+                                    <field name="status"/>
+                                    <field name="capacity" widget="progressbar"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_machine_kanban" model="ir.ui.view">
+        <field name="name">tingostim.machine.kanban</field>
+        <field name="model">tingostim.machine</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="status">
+                <field name="name"/>
+                <field name="machine_type"/>
+                <field name="factory_id"/>
+                <field name="status"/>
+                <field name="current_capacity"/>
+                <field name="hourly_rate"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click">
+                            <strong><field name="name"/></strong>
+                            <div><field name="machine_type"/> · <field name="factory_id"/></div>
+                            <div>Capacity: <field name="current_capacity"/>%</div>
+                            <div>Rate: <field name="hourly_rate"/></div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_machine_search" model="ir.ui.view">
+        <field name="name">tingostim.machine.search</field>
+        <field name="model">tingostim.machine</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="factory_id"/>
+                <field name="machine_type"/>
+                <filter string="Idle" name="filter_idle" domain="[('status', '=', 'idle')]"/>
+                <filter string="Busy" name="filter_busy" domain="[('status', '=', 'busy')]"/>
+                <filter string="Maintenance" name="filter_maintenance" domain="[('status', '=', 'maintenance')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Factory" name="group_factory" context="{'group_by': 'factory_id'}"/>
+                    <filter string="Type" name="group_type" context="{'group_by': 'machine_type'}"/>
+                    <filter string="Status" name="group_status" context="{'group_by': 'status'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_machines" model="ir.actions.act_window">
+        <field name="name">Machines</field>
+        <field name="res_model">tingostim.machine</field>
+        <field name="view_mode">list,kanban,form</field>
+    </record>
+
+</odoo>

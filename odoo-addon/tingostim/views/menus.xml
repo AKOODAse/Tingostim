@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem
+        id="menu_tingostim_root"
+        name="Tingostim"
+        sequence="15"
+        groups="group_tingostim_factory_user,group_tingostim_platform_admin"/>
+
+    <menuitem
+        id="menu_machines"
+        name="Machines"
+        parent="menu_tingostim_root"
+        action="action_machines"
+        sequence="10"/>
+
+    <menuitem
+        id="menu_rental_requests"
+        name="Rental Requests"
+        parent="menu_tingostim_root"
+        action="action_rental_requests"
+        sequence="20"/>
+
+    <menuitem
+        id="menu_factories"
+        name="Factories"
+        parent="menu_tingostim_root"
+        action="action_factory_partners"
+        sequence="30"/>
+
+    <menuitem
+        id="menu_machine_logs"
+        name="Telemetry Logs"
+        parent="menu_tingostim_root"
+        action="action_machine_logs"
+        sequence="40"
+        groups="group_tingostim_platform_admin"/>
+
+</odoo>
